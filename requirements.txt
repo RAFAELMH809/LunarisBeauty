@@ -1,0 +1,17 @@
+# Core web
+Django>=5.1
+whitenoise>=6.6
+django-environ>=0.11
+pillow>=10.3
+
+# ASGI/WSGI servers (for production)
+uvicorn[standard]>=0.30
+gunicorn>=22.0
+
+# Database client (PostgreSQL) — optional but recommended if you use Postgres
+psycopg[binary]>=3.2
+
+# Code quality (optional but handy in dev)
+ruff>=0.5
+black>=24.8
+mypy>=1.10
