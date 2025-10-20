@@ -1,22 +1,44 @@
 :root{
+  /* Tipografía y base */
   --font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   --bg:#ffffff; --fg:#0f172a; --muted:#475569;
-  --brand:#7da874; --brand-600:#6a9662;
-  --shadow:0 6px 24px rgba(2,6,23,.08);
-  --radius:16px; --container:1200px;
+
+  /* Paleta (ajustada al mockup) */
+    --brand:#7f9a73;      /* barra superior */
+  --brand-600:#728c67;  /* hover/darker */
+  --btn:#a7c48f;        /* botón "Agregar al carrito" */
+  --btn-600:#97b57f;
+  --chip:#bdbdbd;       /* "Ver todo" */
+  --chip-600:#a9a9a9;
+  --card-bg:#f7f3f0;    /* fondo rosita/beige de cards */
+
+  /* UI */
+  --shadow:0 8px 28px rgba(2,6,23,.12);
+  --radius:20px; --container:1200px;
   --space:1rem; --space2:1.6rem; --space3:2.2rem;
 }
+
 *{box-sizing:border-box} html,body{margin:0;padding:0}
 body{font-family:var(--font);color:var(--fg);background:var(--bg);line-height:1.55}
 .container{max-width:var(--container);margin:0 auto;padding:0 var(--space2)}
+
 h1,h2,h3{margin:0 0 .6rem}
-h2{font-size:clamp(1.6rem,2.2vw,2.2rem)}
+h2{font-size:clamp(1.4rem,2vw,1.6rem); letter-spacing:.12em; text-transform:uppercase; color:#88907f}
+
 p{color:var(--muted);margin:.5rem 0}
-.btn{display:inline-block;padding:.8rem 1.1rem;border-radius:var(--radius);text-decoration:none;font-weight:600;box-shadow:var(--shadow);border:0;cursor:pointer}
-.btn-primary{background:var(--brand);color:#fff}
-.btn-primary:hover{background:var(--brand-600)}
-.btn-ghost{background:#eee;color:#333}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin:2.5rem auto 1rem}
+
+/* Botones base */
+.btn{display:inline-flex; align-items:center; justify-content:center;
+     padding:.9rem 1.2rem; border-radius:14px; text-decoration:none; font-weight:700;
+     box-shadow:var(--shadow); border:0; cursor:pointer}
+.btn-primary{background:var(--btn); color:#fff}
+.btn-primary:hover{background:var(--btn-600)}
+.btn-ghost{background:#eee; color:#333}
+.btn-chip{background:var(--chip); color:#fff}
+.btn-chip:hover{background:var(--chip-600)}
+
+/* Layouts comunes */
+.section-header{display:flex;align-items:center;justify-content:space-between;margin:2.2rem auto 1rem}
 .grid-products{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-bottom:2.5rem}
 @media (max-width:960px){.grid-products{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){.grid-products{grid-template-columns:1fr}}
