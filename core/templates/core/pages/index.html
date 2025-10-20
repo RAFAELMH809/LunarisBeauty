@@ -1,0 +1,36 @@
+{% extends "base/base.html" %}
+{% block title %}Home — Lunaris Beauty{% endblock %}
+{% block content %}
+
+<section class="hero">
+  <div class="container hero-inner">
+    <div class="hero-slide">
+      <img src="{% static 'core/img/hero1.jpg' %}" alt="Hero">
+      <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+    </div>
+  </div>
+</section>
+
+<section class="container section-header">
+  <h2>PRODUCTOS DESTACADOS</h2>
+  <a class="btn btn-ghost" href="#">Ver todo</a>
+</section>
+
+<section class="container grid-products">
+  {% include "partials/_product_card.html" with image_url=('/static/core/img/productos/p1.jpg') name='Crema natural con extracto de camote' price='155.00' %}
+  {% include "partials/_product_card.html" with image_url=('/static/core/img/productos/p2.jpg') name='Aceite de hierbas relajantes' price='205.00' %}
+  {% include "partials/_product_card.html" with image_url=('/static/core/img/productos/p3.jpg') name='Crema facial de rosa mosqueta' price='155.00' %}
+</section>
+
+<section class="container section-header">
+  <h2>PRODUCTOS para ti</h2>
+  <a class="btn btn-ghost" href="#">Ver todo</a>
+</section>
+
+<section class="container grid-products">
+  {% include "partials/_product_card.html" with image_url=('/static/core/img/productos/p4.jpg') name='Crema reductiva alcanforada' price='222.00' %}
+  {% include "partials/_product_card.html" with image_url=('/static/core/img/productos/p5.jpg') name='Tónico facial de arroz & avena' price='145.00' %}
+  {% include "partials/_product_card.html" with image_url=('/static/core/img/productos/p6.jpg') name='Mascarilla uva & menta' price='155.00' %}
+</section>
+
+{% endblock %}
