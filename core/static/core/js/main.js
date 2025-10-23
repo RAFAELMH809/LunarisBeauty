@@ -4,7 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
   const money = v => Number(v||0).toLocaleString("es-MX",{style:"currency",currency:"MXN"});
 
-  // ====== HERO (como ya lo tenías) ======
   const img = $("#hero-img");
   const slides = (window.HERO_SLIDES || []).slice();
   let hi=0;
@@ -18,53 +17,71 @@ document.addEventListener("DOMContentLoaded", () => {
   showHero(hi);
 
   // ==========================================================
-  // =============== MODAL CHICO (ya existente) ===============
+  // ============ BOTONES DE CANTIDAD (GLOBAL) ================
+  // ==========================================================
+  // Este listener global funcionará para los modales Y la pág. de favoritos
+  document.addEventListener("click", e => {
+    // 1. Vemos si el clic fue en un botón de cantidad
+    const qtyBtn = e.target.closest(".qty__btn");
+    if (!qtyBtn) return;
+
+    // 2. Encontramos el 'input' de cantidad más cercano
+    const qtyContainer = e.target.closest(".qty");
+    if (!qtyContainer) return;
+
+    const qtyInput = qtyContainer.querySelector(".qty__input");
+    if (!qtyInput) return;
+
+    // 3. Obtenemos la cantidad a sumar/restar (del data-qty)
+    const delta = parseInt(qtyBtn.dataset.qty || "0", 10);
+
+    // 4. Actualizamos el valor, asegurando que sea mínimo 1
+    qtyInput.value = Math.max(1, parseInt(qtyInput.value || "1", 10) + delta);
+  });
+
+  // ==========================================================
+  // =============== MODAL CHICO ===============
   // ==========================================================
   const cartModal = $("#cart-modal");
   const mImg   = $("#cartModalImg");
   const mTitle = $("#cartModalTitle");
   const mPrice = $("#cartModalPrice");
-  const mSize  = $("#cartModalSize");
   const mQty   = $("#cartModalQty");
   const mAdd   = $("#cartModalAdd");
   const mMore  = $("#cartModalMore");
 
   function openCartModal(data){
-    if(!cartModal) return;
-    mImg.src = data.image || ""; mImg.alt = data.name || "Producto";
-    mTitle.textContent = data.name || "";
-    mPrice.textContent = money(data.price || 0);
-    mQty.value = 1;
-    mSize.innerHTML = '<option value="" selected>Elegir</option>';
-    (data.sizes || ["Chico","Mediano","Grande"]).forEach(s=>{
-      const opt=document.createElement("option"); opt.textContent=s; opt.value=s; mSize.appendChild(opt);
-    });
-    mMore.dataset.payload = JSON.stringify(data);
-    cartModal.classList.add("is-open"); document.body.style.overflow = "hidden";
-  }
+  if(!cartModal) return;
+  mImg.src = data.image || ""; mImg.alt = data.name || "Producto";
+  mTitle.textContent = data.name || "";
+  mPrice.textContent = money(data.price || 0);
+  mQty.value = 1;
+
+  // (Líneas que usaban mSize eliminadas)
+
+  mMore.dataset.payload = JSON.stringify(data);
+  cartModal.classList.add("is-open"); document.body.style.overflow = "hidden";
+}
   function closeCartModal(){ cartModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
   cartModal?.addEventListener("click", e=>{ if(e.target.matches("[data-close-modal]")) closeCartModal(); });
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCartModal(); });
-  cartModal?.addEventListener("click", e=>{
-    const b=e.target.closest(".qty__btn"); if(!b) return;
-    mQty.value = Math.max(1, parseInt(mQty.value||"1",10) + parseInt(b.dataset.qty||"0",10));
-  });
 
   // Abre modal chico desde la card
   $$(".btn-cart[data-action='add-to-cart']").forEach(btn=>{
     btn.addEventListener("click", ()=>{
       const data = {
-        id:   (btn.dataset.id || (btn.dataset.name||"").toLowerCase().replace(/\s+/g,'-')),
+        id:   btn.dataset.id, // Ahora siempre tenemos ID
         name: btn.dataset.name,
         price: Number(btn.dataset.price||0),
         image: btn.dataset.image,
         url:   btn.dataset.url || "#",
         sizes: btn.dataset.sizes ? btn.dataset.sizes.split("|") : null,
-        desc:  btn.dataset.desc  || "Producto de alta calidad.",
-        benefits: btn.dataset.benefits ? btn.dataset.benefits.split("|") : ["Beneficio 1","Beneficio 2"],
-        ingredients: btn.dataset.ingredients || "Ingredientes del producto.",
-        howto: btn.dataset.howto || "Aplicar según indicaciones.",
-        warnings: btn.dataset.warnings || "Uso externo."
+        // Leemos directamente del data-*. Si está vacío, se pasa vacío.
+        desc:  btn.dataset.desc,
+        benefits: btn.dataset.benefits ? btn.dataset.benefits.split("|") : [], // Array vacío si no hay
+        ingredients: btn.dataset.ingredients,
+        howto: btn.dataset.howto,
+        warnings: btn.dataset.warnings
       };
       openCartModal(data);
     });
@@ -77,7 +94,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const dImg   = $("#detailsImg");
   const dTitle = $("#detailsTitle");
   const dPrice = $("#detailsPrice");
-  const dSize  = $("#detailsSize");
   const dQty   = $("#detailsQty");
   const dAdd   = $("#detailsAdd");
   const dDesc  = $("#detailsDesc");
@@ -87,31 +103,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const dWarn  = $("#detailsWarnings");
 
   function openDetails(data){
-    if(!detModal) return;
-    dImg.src = data.image || ""; dImg.alt = data.name || "Producto";
-    dTitle.textContent = data.name || "";
-    dPrice.textContent = money(data.price || 0);
-    dQty.value = 1;
-    dSize.innerHTML = '<option value="" selected>Elegir</option>';
-    (data.sizes || ["Chico","Mediano","Grande"]).forEach(s=>{
-      const opt=document.createElement("option"); opt.textContent=s; opt.value=s; dSize.appendChild(opt);
-    });
-    dDesc.textContent = data.desc || "";
-    dIngr.textContent = data.ingredients || "";
-    dHowTo.textContent = data.howto || "";
-    dWarn.textContent  = data.warnings || "";
-    dBenefits.innerHTML = "";
-    (data.benefits || []).forEach(b=>{ const li=document.createElement("li"); li.textContent=b; dBenefits.appendChild(li); });
-    detModal.classList.add("is-open"); document.body.style.overflow = "hidden";
-    detModal.dataset.payload = JSON.stringify(data); // guardamos para add
-  }
+  if(!detModal) return;
+  dImg.src = data.image || ""; dImg.alt = data.name || "Producto";
+  dTitle.textContent = data.name || "";
+  dPrice.textContent = money(data.price || 0);
+  dQty.value = 1;
+
+  // (Líneas que usaban dSize eliminadas)
+
+  dDesc.textContent = data.desc || "";
+  dIngr.textContent = data.ingredients || "";
+  dHowTo.textContent = data.howto || "";
+  dWarn.textContent  = data.warnings || "";
+  dBenefits.innerHTML = "";
+  (data.benefits || []).forEach(b=>{ const li=document.createElement("li"); li.textContent=b; dBenefits.appendChild(li); });
+  detModal.classList.add("is-open"); document.body.style.overflow = "hidden";
+  detModal.dataset.payload = JSON.stringify(data); // guardamos para add
+}
   function closeDetails(){ detModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
   detModal?.addEventListener("click", e=>{ if(e.target.matches("[data-close-modal]")) closeDetails(); });
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDetails(); });
-  detModal?.addEventListener("click", e=>{
-    const b=e.target.closest(".qty__btn"); if(!b) return;
-    dQty.value = Math.max(1, parseInt(dQty.value||"1",10) + parseInt(b.dataset.qty||"0",10));
-  });
 
   // Abrir detalles desde el modal chico
   mMore?.addEventListener("click", (e)=>{
@@ -133,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartTotal = $("#cartTotal");
   const btnCloseDrawer = $("[data-cart-close]");
   const btnCheckout = $("#cartCheckout");
+  const btnOpenDrawer = $("#navbarCartButton");
 
   let CART = []; // {key, id, name, image, price, size, qty}
 
@@ -148,6 +160,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   btnCloseDrawer?.addEventListener("click", closeDrawer);
   backdrop?.addEventListener("click", closeDrawer);
+  btnOpenDrawer?.addEventListener("click", (e) => {
+    // 1. Prevenimos que el enlace '#' nos lleve al inicio de la página
+    e.preventDefault();
+    // 2. Llamamos a la función que ya existe para abrir el drawer
+    openDrawer();
+  });
 
   function cartKey(id,size){ return `${id || "prod"}::${size || ""}`; }
 
@@ -189,7 +207,6 @@ document.addEventListener("DOMContentLoaded", () => {
         <img class="cartItem__img" src="${item.image}" alt="${item.name}">
         <div>
           <div class="cartItem__name">${item.name}</div>
-          <div class="cartItem__meta">Tamaño: ${item.size || "-"}</div>
           <div class="cartItem__qty">
             <button class="btn-qty" data-act="dec" data-key="${item.key}">−</button>
             <input type="number" min="1" value="${item.qty}" data-key="${item.key}">
@@ -230,31 +247,186 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   btnCheckout?.addEventListener("click", ()=>{
-    alert("Aquí iría el flujo de pago / checkout.");
+    if (CART.length === 0) {
+      alert("Tu carrito está vacío.");
+      return;
+    }
+
+    // 1. Obtenemos la URL de pago del atributo data-
+    const paymentUrl = btnCheckout.dataset.paymentUrl;
+    if (!paymentUrl) {
+      console.error("No se encontró la URL de pago");
+      return;
+    }
+
+    // 2. Convertimos el carrito (Array) en un JSON (String)
+    const cartData = JSON.stringify(CART);
+
+    // 3. Obtenemos el token CSRF (ya tenemos esta función)
+    const csrfToken = getCSRFToken();
+
+    // 4. Creamos un formulario oculto en la memoria
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = paymentUrl;
+    form.style.display = 'none';
+
+    // 5. Creamos el input para el CSRF token
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = 'csrfmiddlewaretoken';
+    csrfInput.value = csrfToken;
+    form.appendChild(csrfInput);
+
+    // 6. Creamos el input para los datos del carrito
+    const cartInput = document.createElement('input');
+    cartInput.type = 'hidden';
+    cartInput.name = 'cart_data';
+    cartInput.value = cartData;
+    form.appendChild(cartInput);
+
+    // 7. Añadimos el formulario a la página y lo enviamos
+    document.body.appendChild(form);
+    form.submit();
   });
 
   // Conectar "Agregar al carrito" de los dos modales
   mAdd?.addEventListener("click", ()=>{
-    if(!mSize.value){ alert("Elige un tamaño."); return; }
+    // (Validación de tamaño eliminada)
     const qty = Math.max(1, parseInt(mQty.value||"1",10));
     const data = JSON.parse(mMore?.dataset.payload || "{}");
     addToCart({
       id: data.id || (data.name||"").toLowerCase().replace(/\s+/g,'-'),
       name: data.name, image: data.image, price: Number(data.price||0),
-      size: mSize.value, qty
+      // (Campo 'size' eliminado)
+      qty
     });
     closeCartModal();
   });
 
   dAdd?.addEventListener("click", ()=>{
-    if(!dSize.value){ alert("Elige un tamaño."); return; }
+    // (Validación de tamaño eliminada)
     const qty = Math.max(1, parseInt(dQty.value||"1",10));
     const data = JSON.parse(detModal?.dataset.payload || "{}");
     addToCart({
       id: data.id || (data.name||"").toLowerCase().replace(/\s+/g,'-'),
       name: data.name, image: data.image, price: Number(data.price||0),
-      size: dSize.value, qty
+      // (Campo 'size' eliminado)
+      qty
     });
     closeDetails();
+  });
+  // Función para obtener el token CSRF (necesario para POST)
+  function getCSRFToken() {
+    const cookieValue = document.cookie
+      .split('; ')
+      .find(row => row.startsWith('csrftoken='))
+      ?.split('=')[1];
+    return cookieValue || "";
+  }
+
+  // Escuchamos clics en CUALQUIER parte del documento
+  document.addEventListener("click", e => {
+    // 1. Vemos si el clic fue en un botón .wish
+    const wishBtn = e.target.closest(".wish");
+
+    // Si no fue en un botón .wish, o el botón no tiene ID, no hacemos nada
+    if (!wishBtn || !wishBtn.dataset.productId) {
+      return;
+    }
+
+    // 2. Obtenemos el ID del producto
+    const productId = wishBtn.dataset.productId;
+    const url = `/toggle-favorite/${productId}/`;
+
+    // 3. Enviamos la petición FETCH
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": getCSRFToken(), // 4. Incluimos el token de seguridad
+        "X-Requested-With": "XMLHttpRequest"
+      }
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error("Error en la respuesta del servidor");
+      }
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'ok') {
+        // 5. ¡Éxito! Actualizamos el botón
+        //    'data.is_favorited' será true o false (viene del JsonResponse)
+        wishBtn.classList.toggle("is-active", data.is_favorited);
+
+        // (Opcional) Si estamos en la página de favoritos, podríamos
+        // ocultar la tarjeta si 'is_favorited' es false.
+        // Por ahora, solo cambiar el icono es suficiente.
+      } else {
+        console.error(data.message);
+      }
+    })
+    .catch(error => {
+      console.error("Error en la petición fetch:", error);
+    });
+  });
+// ==========================================================
+  // ======= AÑADIR AL CARRITO (DESDE FAVORITOS) ========
+  // ==========================================================
+  // Listener para los botones 'Agregar al carrito' en la pág. de favoritos
+  document.addEventListener("click", e => {
+
+    // 1. Ver si el clic fue en el botón .fav-card__add
+    const addBtn = e.target.closest(".fav-card__add");
+    if (!addBtn) return;
+
+    // 2. Encontrar la tarjeta padre
+    const card = e.target.closest(".fav-card");
+    if (!card) return;
+
+    // 3. Encontrar el input de cantidad DENTRO de esa tarjeta
+    //    (Ya no buscamos 'sizeSelect')
+    const qtyInput = card.querySelector(".fav-card__qty");
+
+    // 4. (Ya no hay validación de tamaño)
+
+    // 5. Recolectar todos los datos del botón y el input
+    const item = {
+      id:     addBtn.dataset.id,
+      name:   addBtn.dataset.name,
+      price:  Number(addBtn.dataset.price || 0),
+      image:  addBtn.dataset.image,
+      // (Ya no pasamos 'size')
+      qty:    Math.max(1, parseInt(qtyInput.value || "1", 10))
+    };
+
+    // 6. ¡Llamar a la función addToCart()!
+    addToCart(item);
+  });
+  // ==========================================================
+  // ==== ABRIR MODAL DETALLES (DESDE FAVORITOS) ========
+  // ==========================================================
+  document.addEventListener("click", e => {
+
+    const detailsLink = e.target.closest(".fav-card__details");
+    if (!detailsLink) return;
+
+    e.preventDefault();
+
+    // No necesitamos "robar" del botón, leemos del enlace
+    const data = {
+      id:     detailsLink.dataset.id,
+      name:   detailsLink.dataset.name,
+      price:  Number(detailsLink.dataset.price||0),
+      image:  detailsLink.dataset.image,
+      sizes:  detailsLink.dataset.sizes ? detailsLink.dataset.sizes.split("|") : null,
+      desc:   detailsLink.dataset.desc,
+      benefits: detailsLink.dataset.benefits ? detailsLink.dataset.benefits.split("|") : [],
+      ingredients: detailsLink.dataset.ingredients,
+      howto:  detailsLink.dataset.howto,
+      warnings: detailsLink.dataset.warnings
+    };
+
+    openDetails(data);
   });
 });

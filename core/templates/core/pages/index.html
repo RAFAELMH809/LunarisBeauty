@@ -7,11 +7,8 @@
   <div class="container">
     <div class="hero-canvas">
       <button class="hero-arrow left" data-hero-dir="-1" aria-label="Anterior">‹</button>
-
       <img id="hero-img" src="{% static 'core/img/hero/hero1.png' %}" alt="Banner principal">
-
       <button class="hero-arrow right" data-hero-dir="1" aria-label="Siguiente">›</button>
-
       <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
     </div>
   </div>
@@ -26,11 +23,15 @@
 <section class="container section-with-arrows">
   <button class="arrow-btn arrow-left" data-target="#grid-top" data-dir="-1">‹</button>
   <button class="arrow-btn arrow-right" data-target="#grid-top" data-dir="1">›</button>
+
   <div id="grid-top" class="grid-products">
-    {% include "partials/_product_card.html" with image_url='core/img/productos/camote.png' name='Crema natural con extracto de camote' price='155.00' %}
-    {% include "partials/_product_card.html" with image_url='core/img/productos/aceite.png' name='Aceite De Hierbas Relajantes Para Masajes' price='205.00' %}
-    {% include "partials/_product_card.html" with image_url='core/img/productos/rosa.png' name='Crema Facial De Rosa Mosqueta Con Ácido Hialurónico' price='155.00' %}
-  </div>
+
+    {% for product in products %}
+      {% include "partials/_product_card.html" with product=product %}
+    {% empty %}
+      <p>No hay productos disponibles en este momento.</p>
+    {% endfor %}
+    </div>
 </section>
 
 <section class="container section-header">
@@ -41,17 +42,20 @@
 <section class="container section-with-arrows">
   <button class="arrow-btn arrow-left" data-target="#grid-bottom" data-dir="-1">‹</button>
   <button class="arrow-btn arrow-right" data-target="#grid-bottom" data-dir="1">›</button>
+
   <div id="grid-bottom" class="grid-products">
-     {% include "partials/_product_card.html" with image_url='core/img/productos/alcanforada.png' name='Crema Reductiva Alcanforada' price='222.00' %}
-  {% include "partials/_product_card.html" with image_url='core/img/productos/transparente.png' name='Tónico Facial De Arroz & Avena' price='145.00' %}
-  {% include "partials/_product_card.html" with image_url='core/img/productos/uva.png' name='Mascarilla De Uva & Menta Elimina Impurezas' price='155.00' %}
-  </div>
+
+    {% for product in products %}
+      {% include "partials/_product_card.html" with product=product %}
+    {% empty %}
+      <p>No hay productos disponibles en este momento.</p>
+    {% endfor %}
+    </div>
 </section>
 
 {% endblock %}
 {% block scripts %}
-<script>
-  // agrega más rutas si luego quieres más slides
-  window.HERO_SLIDES = ["{% static 'core/img/hero/hero1.png' %}"];
-</script>
+  <script>
+    window.HERO_SLIDES = ["{% static 'core/img/hero/hero1.png' %}"];
+  </script>
 {% endblock %}

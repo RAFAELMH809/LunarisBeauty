@@ -10,7 +10,7 @@
 .menu .icon{filter:brightness(0) invert(1)}
 .dropdown{position:relative}
 .dropdown > button{background:rgba(255,255,255,.2);color:#fff;border:0;padding:.5rem .8rem;border-radius:999px}
-.dropdown ul{display:none;position:absolute;top:120%;left:0;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:var(--shadow);padding:.5rem;min-width:190px; z-index:10}
+.dropdown ul{display:none;position:absolute;top:50%;left:0;background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:var(--shadow);padding:.5rem;min-width:190px; z-index:10}
 .dropdown:hover ul{display:block}
 .dropdown li{list-style:none}
 .dropdown a{display:block;padding:.5rem .6rem;color:#0f172a;text-decoration:none}
@@ -351,3 +351,186 @@
 
 /* grid vacío */
 .empty{ background:#f6fbf7; border:1px dashed #cfe2d6; border-radius:12px; padding:18px; }
+
+logout-form {
+  margin: 0;
+}
+.logout-button {
+  /* Reseteo de botón */
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  /* Estilos copiados de '.dropdown a' */
+  display: block;
+  padding: .5rem .6rem;
+  color: #0f172a;
+  text-decoration: none;
+  text-align: left;
+  width: 100%;
+  font-family: inherit; /* Hereda la fuente del body */
+  font-size: 1em;       /* Hereda el tamaño de fuente */
+}
+
+.logout-button:hover {
+  background: #f5f5f5; /* Imita el hover de '.dropdown a' */
+}
+
+.fav-page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(1.4rem, 2vw, 1.6rem);
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--brand-600, #547b6a); /* Usa un color de tu theme */
+  border-bottom: 2px solid #e9efe8;
+  padding-bottom: 1rem;
+}
+.fav-page-title svg {
+  color: var(--brand, #7f9a73);
+}
+
+.fav-list {
+  border-bottom: 1px solid #e9efe8;
+}
+
+.fav-item {
+  display: grid;
+  /* Definimos las columnas: [Imagen] [Contenido] [Botón Quitar] */
+  grid-template-columns: 120px 1fr 40px;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid #e9efe8;
+  align-items: start;
+}
+
+/* --- Columna 1: Imagen --- */
+.fav-item__media img {
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+  background: #f7f7f7; /* Fondo suave por si la img es transparente */
+}
+
+/* --- Columna 2: Contenido --- */
+.fav-item__title {
+  font-size: 1.15rem;
+  margin: 0 0 .2rem;
+  color: var(--fg);
+}
+.fav-item__sub {
+  color: var(--muted);
+  margin: 0 0 .5rem;
+  font-size: 0.95rem;
+}
+.fav-item__price {
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin: 0;
+}
+.fav-item .btn-cart {
+  /* Hacemos el botón un poco más pequeño para la lista */
+  padding: .6rem 1rem;
+  font-size: 0.9rem;
+  border-radius: 10px;
+}
+
+/* --- Columna 3: Botón Quitar --- */
+.fav-item__remove {
+  text-align: right;
+}
+
+/* Anulamos el 'position: absolute' que tenía .wish
+  para que ocupe su lugar en la cuadrícula.
+*/
+.fav-item .wish {
+  position: static;
+  opacity: 1;
+  box-shadow: none;
+  border: 1px solid #d7e2d6;
+}
+.fav-item .wish:hover {
+  background: #f7f7f7;
+}
+
+/* --- Responsivo para móviles --- */
+@media (max-width: 640px) {
+  .fav-item {
+    /* [Imagen] [Contenido] */
+    /* [Quitar] [Contenido] */
+    grid-template-columns: 100px 1fr;
+    gap: 1rem;
+  }
+  .fav-item__remove {
+    /* Mueve el botón de quitar a la fila 2, columna 1 */
+    grid-row: 2;
+    grid-column: 1;
+    text-align: center;
+  }
+  .fav-item__content {
+    /* El contenido ocupa la fila 1 y 2, en la columna 2 */
+    grid-row: 1 / span 2;
+    grid-column: 2;
+  }
+  .fav-item__title {
+    font-size: 1.05rem;
+  }
+  .fav-page-title {
+    font-size: 1.2rem;
+    gap: 8px;
+  }
+  .fav-page-title svg {
+    width: 22px;
+  }
+}
+
+/* ======================================== */
+/* ======== PÁGINA DE FAVORITOS (TARJETAS) */
+/* ======================================== */
+
+/* Esta es la tarjeta que envuelve el componente.
+  Usa 'modal__content' para el layout de grid, pero
+  le añadimos estos estilos de "tarjeta".
+*/
+.fav-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .08);
+  margin-bottom: 1.5rem;
+  position: relative; /* Necesario para el botón 'wish' */
+}
+
+/* Estilos para el botón 'wish' (♡)
+  Reutilizamos 'modal__close' para la posición, pero
+  ajustamos el estilo para que se vea como el 'wish' original.
+*/
+.fav-card .wish {
+  color: #a3b1a3;
+  /* Sobrescribimos el 'background' del modal__close */
+  background: #fff !important;
+  border: 1px solid #d7e2d6 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+  font-size: 16px; /* Hacemos el corazón más pequeño */
+  line-height: 1.2;
+}
+
+.fav-card .wish.is-active {
+  border-color: #6aa38a !important;
+  color: #fff !important;
+  background: #6aa38a !important;
+}
+
+.fav-card .wish:hover {
+  background: #f7f7f7 !important;
+}
+
+/* Ajuste responsivo:
+  En móviles, hacemos que el layout sea de una sola columna.
+*/
+@media (max-width: 860px) {
+  .fav-card.modal__content {
+    grid-template-columns: 1fr;
+  }
+}

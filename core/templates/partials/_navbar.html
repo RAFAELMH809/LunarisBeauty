@@ -1,9 +1,9 @@
 {% load static %}
 <header class="container nav">
-  <a class="brand" href="/">
-    <img src="{% static 'core/img/logo.svg' %}" alt="Lunaris" width="28" height="28">
+  <a class="brand" href="{% url 'index' %}"> <img src="{% static 'core/img/logo.svg' %}" alt="Lunaris" width="28" height="28">
     <strong>LUNARIS <span>BEAUTY</span></strong>
   </a>
+
   <nav class="menu">
     <div class="dropdown">
       <button>Tipos de piel ▾</button>
@@ -21,8 +21,34 @@
     <a href="#">Cuerpo</a>
     <a href="#">Cabello</a>
     <a href="#">Kits</a>
-    <a class="icon" href="#" title="Carrito">🛒</a>
-    <a class="icon" href="#" title="Favoritos">♡</a>
+
+    <a class="icon" id="navbarCartButton" href="#" title="Carrito">🛒</a>
+
+    {% if user.is_authenticated %}
+
+      <a class="icon" href="{% url 'favorites' %}" title="Favoritos">♡</a> <div class="dropdown">
+        <button>Hola, {{ user.username }} ▾</button>
+        <ul>
+          <li><a href="#">Mi Cuenta</a></li>
+          <li><a href="#">Mis Pedidos</a></li>
+          <li>
+          <form action="{% url 'logout' %}" method="post" class="logout-form">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Cerrar Sesión</button>
+          </form>
+          </li>
+        </ul>
+      </div>
+
+    {% else %}
+
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+      <a href="{% url 'register' %}" style="background: rgba(255,255,255,.2); padding: .5rem .8rem; border-radius: 999px;">
+        Registro
+      </a>
+
+    {% endif %}
+
     <form class="search"><input placeholder="Buscar"></form>
   </nav>
 </header>

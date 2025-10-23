@@ -1,0 +1,114 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Página de Pago — Lunaris Beauty{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 960px; margin: 2rem auto 3rem;">
+  <h2 style="text-align: center; color: var(--brand);">Página de Pago</h2>
+
+  <div style="display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 2rem; align-items: start; margin-top: 2rem;">
+
+    <form style="background: #fff; border-radius: 16px; padding: 1.5rem; box-shadow: var(--shadow);">
+
+      <h3>Detalles del cliente</h3>
+
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Email *</label>
+        <input type_="email" class="pdp__select" placeholder="tu@email.com">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="margin-bottom: 1rem;">
+          <label class="pdp__label">Nombre *</label>
+          <input type="text" class="pdp__select">
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="pdp__label">Apellido *</label>
+          <input type="text" class="pdp__select">
+        </div>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Telefono *</label>
+        <input type="tel" class="pdp__select">
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Colonia *</label>
+        <input type="text" class="pdp__select">
+      </div>
+
+      <h3 style="margin-top: 2rem;">Detalles de envio</h3>
+
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">País *</label>
+        <select class="pdp__select">
+          <option value="MX">México</option>
+          <option value="US">Estados Unidos</option>
+          <option value="CA">Canadá</option>
+        </select>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Dirección *</label>
+        <input type="text" class="pdp__select" placeholder="Calle y número">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="margin-bottom: 1rem;">
+          <label class="pdp__label">Ciudad *</label>
+          <input type="text" class="pdp__select">
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="pdp__label">Región *</label>
+          <input type="text" class="pdp__select" placeholder="Estado / Provincia">
+        </div>
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Código postal *</label>
+        <input type="text" class="pdp__select">
+      </div>
+      <h3 style="margin-top: 2rem;">Información de Pago</h3>
+
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Nombre en la tarjeta</label>
+        <input type="text" class="pdp__select" placeholder="Juan Perez">
+      </div>
+      <div style="margin-bottom: 1rem;">
+        <label class="pdp__label">Número de tarjeta</label>
+        <input type="text" class="pdp__select" placeholder="0000 0000 0000 0000">
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div style="margin-bottom: 1rem;">
+          <label class="pdp__label">Expira (MM/AA)</label>
+          <input type="text" class="pdp__select" placeholder="12/26">
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <label class="pdp__label">CVV</label>
+          <input type="text" class="pdp__select" placeholder="123">
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+        Pagar ${{ total_price|floatformat:2 }}
+      </button>
+    </form>
+
+
+    <div style="background: #f7fbf5; border: 1px solid #d9e0d6; border-radius: 16px; padding: 1.5rem; position: sticky; top: 20px;">
+      <h3>Resumen de tu pedido</h3>
+
+      {% for item in cart_items %}
+      <div style="display: grid; grid-template-columns: 60px 1fr auto; gap: 1rem; align-items: center; padding: 1rem 0; border-bottom: 1px solid #e9efe8;">
+  <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px;">
+  <div>
+    <strong style="display: block; color: var(--fg);">{{ item.product.name }}</strong>
+    <small style="color: var(--muted);">Cant: {{ item.quantity }}</small>
+  </div>
+  <strong style="color: var(--fg);">${{ item.subtotal|floatformat:2 }}</strong>
+</div>
+      {% endfor %}
+
+      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 1.2rem; margin-top: 1.5rem;">
+        <strong>Total (MXN)</strong>
+        <strong>${{ total_price|floatformat:2 }}</strong>
+      </div>
+    </div>
+
+  </div> </div>
+{% endblock %}

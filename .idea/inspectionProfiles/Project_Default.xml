@@ -1,0 +1,21 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="Django" />
+          <option value="whitenoise" />
+          <option value="django-environ" />
+          <option value="pillow" />
+          <option value="uvicorn" />
+          <option value="gunicorn" />
+          <option value="psycopg" />
+          <option value="ruff" />
+          <option value="black" />
+          <option value="mypy" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>
