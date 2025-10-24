@@ -1,0 +1,38 @@
+{% load static %}
+<article class="card">
+
+  <button
+    class="wish {% if product.is_favorited %}is-active{% endif %}"
+    aria-label="Favorito"
+    {% if product.id %}data-product-id="{{ product.id }}"{% endif %}
+  >
+    ♡
+  </button>
+
+  <div class="thumb">
+    <img src="{% if product.image.url %}{{ product.image.url }}{% endif %}" alt="{{ product.name }}">
+  </div>
+
+  <div class="card-body">
+    <h3 class="card-title">{{ product.name }}</h3>
+    {% if product.subtitle %}<p class="card-sub">{{ product.subtitle }}</p>{% endif %}
+    <p class="card-price">${{ product.price }}</p>
+
+    <button
+      class="btn btn-primary btn-cart"
+      data-action="add-to-cart"
+      data-id="{{ product.id }}"
+      data-name="{{ product.name }}"
+      data-price="{{ product.price }}"
+      data-image="{% if product.image.url %}{{ product.image.url }}{% endif %}"
+      data-url="#"
+      data-desc="{{ product.description|default:'' }}"
+      data-benefits="{{ product.benefits|default:'' }}"
+      data-ingredients="{{ product.ingredients|default:'' }}"
+      data-howto="{{ product.how_to_use|default:'' }}"
+      data-warnings="{{ product.warnings|default:'' }}"
+    >
+      Agregar al carrito
+    </button>
+  </div>
+</article>

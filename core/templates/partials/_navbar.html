@@ -1,0 +1,70 @@
+{% load static %}
+
+<!-- Barra superior completa -->
+<div class="navbar-wrap">
+  <header class="nav">
+    <!-- Logo -->
+    <a class="brand" href="{% url 'index' %}">
+      <img src="{% static 'core/img/icons/lunaris_256.png' %}" alt="Lunaris" >
+    </a>
+
+    <!-- Menú principal -->
+    <nav class="menu">
+      <div class="dropdown">
+        <button>Tipos de piel ▾</button>
+        <ul>
+          <li><a href="#">Piel grasa</a></li>
+          <li><a href="#">Piel con acné</a></li>
+          <li><a href="#">Piel seca</a></li>
+          <li><a href="#">Piel madura</a></li>
+          <li><a href="#">Piel mixta</a></li>
+          <li><a href="#">Piel sensible</a></li>
+        </ul>
+      </div>
+
+      <a href="#">Rostro</a>
+      <a href="#">Maquillaje</a>
+      <a href="#">Cuerpo</a>
+      <a href="#">Cabello</a>
+      <a href="#">Kits</a>
+
+      <!-- Ícono carrito -->
+      <a class="icon" id="navbarCartButton" href="#" title="Carrito">
+        <img src="{% static 'core/img/icons/carrito.png' %}" alt="Carrito" class="cart-icon">
+      </a>
+
+      <!-- Si el usuario está logueado -->
+      {% if user.is_authenticated %}
+      <a href="{% url 'favorites' %}" class="nav-fav" title="Favoritos">
+        <img src="{% static 'core/img/icons/corazon_trazo.png' %}" alt="Favoritos" class="nav-fav__icon">
+        <span>Favoritos</span>
+      </a>
+
+      <div class="dropdown">
+        <button>Hola, {{ user.username }} ▾</button>
+        <ul>
+          <li><a href="#">Mi Cuenta</a></li>
+          <li><a href="#">Mis Pedidos</a></li>
+          <li>
+            <form action="{% url 'logout' %}" method="post" class="logout-form">
+              {% csrf_token %}
+              <button type="submit" class="logout-button">Cerrar Sesión</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+      {% else %}
+      <a href="{% url 'login' %}">Iniciar Sesión</a>
+      <a href="{% url 'register' %}"
+        style="background: rgba(255,255,255,.2); padding: .5rem .8rem; border-radius: 999px;">
+        Registro
+      </a>
+      {% endif %}
+
+      <!-- Buscador -->
+      <form class="search">
+        <input placeholder="Buscar">
+      </form>
+    </nav>
+  </header>
+</div>

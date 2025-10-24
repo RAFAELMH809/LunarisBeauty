@@ -1,0 +1,43 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Crear Cuenta — Lunaris Beauty{% endblock %}
+
+{% block content %}
+<div class"container" style="max-width: 500px; margin: 2rem auto 3rem;">
+  
+  <h2 style="text-align: center; color: var(--brand);">Crear una Cuenta</h2>
+  
+  <form method="post" style="padding: 1.5rem; background: #f7fbf5; border-radius: 16px; border: 1px solid #d9e0d6;">
+    
+    {% csrf_token %}
+    
+    {% for field in form %}
+    <div style="margin-bottom: 1rem;">
+      
+      <label class="pdp__label">{{ field.label_tag }}</label>
+      
+      {{ field }}
+      
+      {% if field.help_text %}
+        <small style="color: var(--muted); font-size: 0.85rem; display: block; margin-top: 4px;">
+          {{ field.help_text|safe }}
+        </small>
+      {% endif %}
+      
+      {% for error in field.errors %}
+        <p style="color: #D9534F; font-size: 0.9rem; margin-top: 4px;">{{ error }}</p>
+      {% endfor %}
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+      Registrarse
+    </button>
+  </form>
+  
+  <p style="text-align: center; margin-top: 1.5rem;">
+    ¿Ya tienes una cuenta? <a href="{% url 'login' %}" style="color: var(--brand-600);">Inicia sesión</a>
+  </p>
+</div>
+{% endblock %}

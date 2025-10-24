@@ -1,0 +1,81 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Inicio - Lunaris Beauty{% endblock %}
+
+
+{% block content %}
+
+<!-- ================= HERO CARRUSEL ================= -->
+<div class="hero-wrap">
+  <section class="hero">
+
+    <!-- Contenedor de slides -->
+    <div class="hero-slider">
+      <div class="hero-slide active">
+        <img src="{% static 'core/img/hero/hero1.png' %}" alt="Banner 1">
+        <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+      </div>
+
+      <div class="hero-slide">
+        <img src="{% static 'core/img/hero/hero2.jpg' %}" alt="Banner 2">
+        <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+      </div>
+
+      <div class="hero-slide">
+        <img src="{% static 'core/img/hero/hero3.jpg' %}" alt="Banner 3">
+        <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+      </div>
+    </div>
+
+    <!-- ✅ Flechas fijas sobre todo el hero -->
+    <button class="hero-arrow left" aria-label="Anterior"></button>
+    <button class="hero-arrow right" aria-label="Siguiente"></button>
+
+    <!-- Puntos -->
+    <div class="hero-dots"></div>
+
+  </section>
+</div>
+
+
+<!-- ================= PRODUCTOS DESTACADOS ================= -->
+<section class="container section-header">
+  <h2>PRODUCTOS DESTACADOS</h2>
+  <a class="btn btn-chip" href="#">Ver todo</a>
+</section>
+
+<section class="container section-with-arrows">
+  <div id="grid-top" class="grid-products">
+    {% for product in products %}
+      {% include "partials/_product_card.html" with product=product %}
+    {% empty %}
+      <p>No hay productos disponibles en este momento.</p>
+    {% endfor %}
+  </div>
+</section>
+
+
+
+<section class="container section-header">
+  <h2>PRODUCTOS PARA TI</h2>
+  <a class="btn btn-chip" href="#">Ver todo</a>
+</section>
+
+<section class="container section-with-arrows">
+  <div id="grid-top" class="grid-products">
+    {% for product in products %}
+      {% include "partials/_product_card.html" with product=product %}
+    {% empty %}
+      <p>No hay productos disponibles en este momento.</p>
+    {% endfor %}
+  </div>
+</section>
+
+
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'core/js/hero.js' %}"></script>
+  <script src="{% static 'core/js/arrowcard.js' %}"></script>
+{% endblock %}

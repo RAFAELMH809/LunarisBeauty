@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Iniciar Sesión — Lunaris Beauty{% endblock %}
+
+{% block content %}
+<div class"container" style="max-width: 500px; margin: 2rem auto 3rem;">
+
+  <h2 style="text-align: center; color: var(--brand);">Iniciar Sesión</h2>
+
+  {% if form.errors %}
+    <p style="color: #D9534F; background: #fdd; padding: 1rem; border-radius: 12px; text-align: center;">
+      Tu usuario y contraseña no coinciden. Por favor, inténtalo de nuevo.
+    </p>
+  {% endif %}
+
+  <form method="post" style="padding: 1.5rem; background: #f7fbf5; border-radius: 16px; border: 1px solid #d9e0d6;">
+    
+    {% csrf_token %}
+    
+    <div style="margin-bottom: 1rem;">
+      <label class="pdp__label" for="{{ form.username.id_for_label }}">Usuario:</label>
+      {{ form.username }}
+    </div>
+
+    <div style="margin-bottom: 1rem;">
+      <label class="pdp__label" for="{{ form.password.id_for_label }}">Contraseña:</label>
+      {{ form.password }}
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+      Entrar
+    </button>
+  </form>
+  
+  <p style="text-align: center; margin-top: 1.5rem;">
+    ¿No tienes una cuenta? <a href="{% url 'register' %}" style="color: var(--brand-600);">Regístrate</a>
+  </p>
+</div>
+{% endblock %}

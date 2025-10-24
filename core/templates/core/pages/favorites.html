@@ -1,0 +1,92 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block title %}Mis Favoritos — Lunaris Beauty{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 800px; margin: 2rem auto 3rem;">
+
+  <h2 class="fav-page-title">
+    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="currentColor" viewBox="0 0 16 16">
+      <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+    </svg>
+    FAVORITOS
+  </h2>
+
+  {% if products %}
+    <div class="fav-list-cards">
+
+      {% for product in products %}
+      <article class="fav-card modal__content">
+
+        <button
+          class="modal__close wish is-active"
+          data-product-id="{{ product.id }}"
+          aria-label="Quitar favorito"
+        >
+          ♡
+        </button>
+
+        <div class="modal__media">
+          <img src="{{ product.image.url }}" alt="{{ product.name }}">
+        </div>
+
+        <div class="modal__body">
+          <h3 class="modal__title">{{ product.name }}</h3>
+          <p class="modal__price">${{ product.price }}</p>
+
+          <label class="modal__label">Cantidad *</label>
+          <div class="qty">
+            <button class="qty__btn" data-qty="-1">−</button>
+            <input class="qty__input fav-card__qty" type="number" min="1" value="1" inputmode="numeric">
+            <button class="qty__btn" data-qty="1">+</button>
+          </div>
+
+          <button
+            class="btn btn-primary fav-card__add"
+            style="width:100%; margin-top:12px;"
+            data-id="{{ product.id }}"
+            data-name="{{ product.name }}"
+            data-price="{{ product.price }}"
+            data-image="{{ product.image.url }}"
+            data-desc="{{ product.description|default:'' }}"
+            data-benefits="{{ product.benefits|default:'' }}"
+            data-ingredients="{{ product.ingredients|default:'' }}"
+            data-howto="{{ product.how_to_use|default:'' }}"
+            data-warnings="{{ product.warnings|default:'' }}"
+          >
+            Agregar al carrito
+          </button>
+
+          <a
+            href="#"
+            class="modal__link fav-card__details"
+            style="text-align:center; display:block; margin-top:10px;"
+            data-id="{{ product.id }}"
+            data-name="{{ product.name }}"
+            data-price="{{ product.price }}"
+            data-image="{{ product.image.url }}"
+            data-desc="{{ product.description|default:'' }}"
+            data-benefits="{{ product.benefits|default:'' }}"
+            data-ingredients="{{ product.ingredients|default:'' }}"
+            data-howto="{{ product.how_to_use|default:'' }}"
+            data-warnings="{{ product.warnings|default:'' }}"
+          >
+            Ver más detalles
+          </a>
+
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <div classs="empty" style="text-align: center; padding: 3rem; background: #f7fbf5; border-radius: 16px; margin-top: 2rem;">
+      <p style="font-size: 1.2rem; color: var(--fg);">Aún no tienes favoritos.</p>
+      <p style="margin-bottom: 1.5rem;">Haz clic en el corazón (♡) de un producto para guardarlo aquí.</p>
+      <a href="{% url 'index' %}" class="btn btn-primary">Ver productos</a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
