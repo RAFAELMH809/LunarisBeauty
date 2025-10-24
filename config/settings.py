@@ -31,7 +31,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "core",  # tu app principal
+    "core",
+    "cloudinary",
+    "cloudinary_storage",  # tu app principal
 ]
 
 # ==============================
@@ -121,6 +123,7 @@ LOGIN_URL = "login"
 # AUTO FIELD
 # ==============================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # ==============================
 # DEBUG INFO (opcional en logs)
