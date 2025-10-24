@@ -1,10 +1,13 @@
-:root{
+@import url('https://fonts.cdnfonts.com/css/sansation');
+
+:root {
   /* Tipografía y base */
   --font: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   --bg:#ffffff; --fg:#0f172a; --muted:#475569;
-
+  --font-title: "Cormorant Garamond", serif; /* fuente para títulos y navbar */
+  
   /* Paleta (ajustada al mockup) */
-    --brand:#7f9a73;      /* barra superior */
+  --brand:#7f9a73;      /* barra superior */
   --brand-600:#728c67;  /* hover/darker */
   --btn:#a7c48f;        /* botón "Agregar al carrito" */
   --btn-600:#97b57f;
@@ -18,27 +21,402 @@
   --space:1rem; --space2:1.6rem; --space3:2.2rem;
 }
 
-*{box-sizing:border-box} html,body{margin:0;padding:0}
-body{font-family:var(--font);color:var(--fg);background:var(--bg);line-height:1.55}
-.container{max-width:var(--container);margin:0 auto;padding:0 var(--space2)}
+*{box-sizing:border-box} 
+html,body{margin:0;padding:0}
+body{
+  font-family:var(--font);
+  color:var(--fg);
+  background:var(--bg);
+  line-height:1.55
+}
+.container{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:0 var(--space2)
+}
 
 h1,h2,h3{margin:0 0 .6rem}
-h2{font-size:clamp(1.4rem,2vw,1.6rem); letter-spacing:.12em; text-transform:uppercase; color:#88907f}
+h2{
+  font-size:clamp(1.4rem,2vw,1.6rem); 
+  letter-spacing:.12em; 
+  text-transform:uppercase; 
+  color:#88907f
+}
 
 p{color:var(--muted);margin:.5rem 0}
 
-/* Botones base */
-.btn{display:inline-flex; align-items:center; justify-content:center;
-     padding:.9rem 1.2rem; border-radius:14px; text-decoration:none; font-weight:700;
-     box-shadow:var(--shadow); border:0; cursor:pointer}
+/* === Botones base === */
+.btn{
+  display:inline-flex; 
+  align-items:center; 
+  justify-content:center;
+  padding:.9rem 1.2rem; 
+  border-radius:14px; 
+  text-decoration:none; 
+  font-weight:700;
+  box-shadow:var(--shadow); 
+  border:0; 
+  cursor:pointer
+}
 .btn-primary{background:var(--btn); color:#fff}
 .btn-primary:hover{background:var(--btn-600)}
 .btn-ghost{background:#eee; color:#333}
 .btn-chip{background:var(--chip); color:#fff}
 .btn-chip:hover{background:var(--chip-600)}
 
-/* Layouts comunes */
-.section-header{display:flex;align-items:center;justify-content:space-between;margin:2.2rem auto 1rem}
-.grid-products{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-bottom:2.5rem}
+/* === Layouts comunes === */
+.section-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin:2.2rem auto 1rem
+}
+.grid-products{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:1.4rem;
+  margin-bottom:2.5rem
+}
 @media (max-width:960px){.grid-products{grid-template-columns:1fr 1fr}}
 @media (max-width:640px){.grid-products{grid-template-columns:1fr}}
+
+/* ================= HERO SLIDE ================= */
+.hero-wrap {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  width: 100%;
+  height: 40vh;
+  min-height: 400px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.hero-slider {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s ease-in-out;
+}
+
+.hero-slide {
+  flex: 0 0 100%;
+  position: relative;
+}
+
+.hero-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.hero-cta {
+  position: absolute;
+  bottom: 10%;
+  left: 8%;
+  background: rgba(255,255,255,0.9);
+  color: #0A1612;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.3s ease;
+  z-index: 3;
+}
+.hero-cta:hover {
+  background: #fff;
+  transform: scale(1.05);
+}
+
+/* === Flechas del hero === */
+.hero-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0.8;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.hero-arrow:hover {
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+.hero-arrow::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 20px;
+  border-top: 3px solid #ffffff;
+  border-right: 3px solid #ffffff;
+  transform: rotate(-135deg);
+  margin: auto;
+}
+.hero-arrow.right::before {
+  transform: rotate(45deg);
+}
+.hero-arrow.left { left: 30px; }
+.hero-arrow.right { right: 30px; }
+.hero:hover .hero-arrow { opacity: 1; }
+
+/* === Íconos === */
+.icon img.cart-icon {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+  transition: transform 0.2s ease, filter 0.2s ease;
+  vertical-align: middle;
+}
+.icon img.cart-icon:hover {
+  transform: scale(1.1);
+  filter: brightness(0.9) invert(1);
+}
+
+/* ===== Tipografía: Navbar + Títulos ===== */
+.nav, 
+.menu, 
+.menu a, 
+.dropdown > button, 
+.brand strong, 
+.nav-fav, 
+.nav-fav span,
+h1, h2, h3 {
+  font-family: var(--font-title);
+  letter-spacing: 0.02em;
+  font-weight: 500;
+}
+.nav,
+.menu,
+.menu a,
+.dropdown > button,
+.brand strong,
+.nav-fav,
+.nav-fav span {
+  font-size: 1.3rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+h1, h2, h3 {
+  font-weight: 600;
+  color: #547b6a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.menu a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ===== Favoritos ===== */
+.nav-fav__icon {
+  width: 22px;
+  height: 22px;
+  filter: brightness(0) invert(1);
+  vertical-align: middle;
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.nav-fav__icon:hover {
+  transform: scale(1.08);
+  filter: brightness(0.9) invert(1);
+}
+
+/* ===== NAVBAR CENTRADA ===== */
+.navbar-wrap {
+  background: var(--brand);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+
+/* === LOGO: más grande y centrado === */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand img {
+  height: 80px !important;
+  width: auto !important;
+  object-fit: contain !important;
+}
+
+
+.brand span {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  color: #fff;
+  letter-spacing: 0.04em;
+}
+
+
+/* === CENTRADO PERFECTO DE NAVBAR === */
+header.nav {
+  display: flex;
+  align-items: center;   /* 👈 fuerza alineación vertical exacta */
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 1rem var(--space2);
+}
+
+/* === FORZAR ALINEACIÓN VERTICAL UNIFORME === */
+.menu {
+  display: flex;
+  align-items: center;   /* 👈 centra todo en el eje Y */
+  justify-content: center;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+/* === AJUSTE VISUAL DEL BUSCADOR === */
+.menu .search {
+  display: flex;
+  align-items: center;   /* 👈 centra el input verticalmente */
+  justify-content: center;
+  margin: 0;             /* elimina desbalance lateral */
+}
+
+.menu .search input {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  line-height: 36px;     /* 👈 iguala la altura del texto */
+  padding: 0 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.6);
+  background: transparent;
+  color: #fff;
+  text-align: center;
+  font-family: var(--font-title);
+  font-size: 1rem;
+}
+/* === COLOR DEL PLACEHOLDER DEL BUSCADOR === */
+.menu .search input::placeholder {
+  color: rgba(255, 255, 255, 0.7); /* 👈 blanco translúcido */
+  font-family: var(--font-title);
+  letter-spacing: 0.03em;
+  transition: color 0.3s ease;
+}
+
+/* Opcional: cambia el color cuando el usuario pasa el mouse o enfoca el input */
+.menu .search input:hover::placeholder,
+.menu .search input:focus::placeholder {
+  color: rgba(255, 255, 255, 0.9); /* más brillante al enfocar */
+}
+
+/* === FOOTER GENERAL === */
+/* === FOOTER GENERAL === */
+.footer {
+  background: var(--btn);
+  color: #013d48;
+  padding: 2.5rem 0;
+  font-family: 'Sansation', sans-serif;
+  font-style: normal; /* 👈 quita cualquier efecto italic heredado */
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 2.5rem;
+}
+
+/* === TÍTULOS DEL FOOTER === */
+.footer h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #18817e; /* azul oscuro uniforme */
+  margin-bottom: 1rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* === TEXTO GENERAL DEL FOOTER === */
+.footer p,
+.footer li,
+.footer a {
+  color: #ffffff;
+  font-size: 0.98rem;
+  font-family: 'Sansation', sans-serif;
+  font-style: normal; /* 👈 elimina cursiva */
+  text-decoration: none;
+  line-height: 1.7;
+}
+
+.footer a:hover {
+  color: #013d48;
+  text-decoration: underline;
+}
+
+/* === ICONOS DEL FOOTER === */
+.footer-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 8px;
+  transition: transform 0.2s ease;
+  
+  /* 👆 fuerza el color a #013d48 */
+}
+
+.footer-icon:hover {
+  transform: scale(1.1);
+}
+
+/* === REDES SOCIALES === */
+.social-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.social-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+.social-list a {
+  color: #ffffff;
+}
+.social-list a:hover {
+  color: #013d48;
+}
+
+/* === SERVICIOS SIN VIÑETAS === */
+.no-icons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.no-icons li {
+  margin-bottom: 0.6rem;
+}
+
+/* === COPYRIGHT FINAL === */
+.footer-copy {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #ffffff;
+  margin-top: 2.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
+  font-family: 'Sansation', sans-serif;
+  font-style: normal;
+  letter-spacing: 0.03em;
+}
+

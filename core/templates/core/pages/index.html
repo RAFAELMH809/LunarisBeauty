@@ -1,61 +1,81 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% block title %}Home — Lunaris Beauty{% endblock %}
+
+{% block title %}Inicio - Lunaris Beauty{% endblock %}
+
+
 {% block content %}
 
-<section class="hero">
-  <div class="container">
-    <div class="hero-canvas">
-      <button class="hero-arrow left" data-hero-dir="-1" aria-label="Anterior">‹</button>
-      <img id="hero-img" src="{% static 'core/img/hero/hero1.png' %}" alt="Banner principal">
-      <button class="hero-arrow right" data-hero-dir="1" aria-label="Siguiente">›</button>
-      <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+<!-- ================= HERO CARRUSEL ================= -->
+<div class="hero-wrap">
+  <section class="hero">
+
+    <!-- Contenedor de slides -->
+    <div class="hero-slider">
+      <div class="hero-slide active">
+        <img src="{% static 'core/img/hero/hero1.png' %}" alt="Banner 1">
+        <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+      </div>
+
+      <div class="hero-slide">
+        <img src="{% static 'core/img/hero/hero2.jpg' %}" alt="Banner 2">
+        <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+      </div>
+
+      <div class="hero-slide">
+        <img src="{% static 'core/img/hero/hero3.jpg' %}" alt="Banner 3">
+        <a class="btn btn-ghost hero-cta" href="#">Ver producto</a>
+      </div>
     </div>
-  </div>
-</section>
+
+    <!-- ✅ Flechas fijas sobre todo el hero -->
+    <button class="hero-arrow left" aria-label="Anterior"></button>
+    <button class="hero-arrow right" aria-label="Siguiente"></button>
+
+    <!-- Puntos -->
+    <div class="hero-dots"></div>
+
+  </section>
+</div>
 
 
+<!-- ================= PRODUCTOS DESTACADOS ================= -->
 <section class="container section-header">
   <h2>PRODUCTOS DESTACADOS</h2>
   <a class="btn btn-chip" href="#">Ver todo</a>
 </section>
 
 <section class="container section-with-arrows">
-  <button class="arrow-btn arrow-left" data-target="#grid-top" data-dir="-1">‹</button>
-  <button class="arrow-btn arrow-right" data-target="#grid-top" data-dir="1">›</button>
-
   <div id="grid-top" class="grid-products">
-
     {% for product in products %}
       {% include "partials/_product_card.html" with product=product %}
     {% empty %}
       <p>No hay productos disponibles en este momento.</p>
     {% endfor %}
-    </div>
+  </div>
 </section>
 
+
+
 <section class="container section-header">
-  <h2>PRODUCTOS para ti</h2>
+  <h2>PRODUCTOS PARA TI</h2>
   <a class="btn btn-chip" href="#">Ver todo</a>
 </section>
 
 <section class="container section-with-arrows">
-  <button class="arrow-btn arrow-left" data-target="#grid-bottom" data-dir="-1">‹</button>
-  <button class="arrow-btn arrow-right" data-target="#grid-bottom" data-dir="1">›</button>
-
-  <div id="grid-bottom" class="grid-products">
-
+  <div id="grid-top" class="grid-products">
     {% for product in products %}
       {% include "partials/_product_card.html" with product=product %}
     {% empty %}
       <p>No hay productos disponibles en este momento.</p>
     {% endfor %}
-    </div>
+  </div>
 </section>
 
+
 {% endblock %}
+
 {% block scripts %}
-  <script>
-    window.HERO_SLIDES = ["{% static 'core/img/hero/hero1.png' %}"];
-  </script>
+  <script src="{% static 'core/js/hero.js' %}"></script>
+  <script src="{% static 'core/js/arrowcard.js' %}"></script>
 {% endblock %}

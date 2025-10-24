@@ -1,33 +1,85 @@
+{% load static %}
+
 <footer class="footer">
   <div class="container footer-grid">
+    <!-- === CONTACTO === -->
     <section>
       <h4>CONTÁCTANOS</h4>
-      <p>📞 (+601) 3907013</p>
-      <p>✉️ <a href="mailto:lunarys@db-system.com">lunarys@db-system.com</a></p>
-      <p>📍 Calle 97A No. 53 - 01</p>
+      <p>
+        <img src="{% static 'core/img/icons/phone.png' %}" alt="Teléfono" class="footer-icon blue">
+        (+601) 3907013
+      </p>
+      <p>
+        <img src="{% static 'core/img/icons/mail.png' %}" alt="Correo" class="footer-icon blue">
+        <a href="mailto:lunarys@db-system.com">lunarys@db-system.com</a>
+      </p>
+      <p>
+        <img src="{% static 'core/img/icons/pin_17827E.png' %}" alt="Ubicación" class="footer-icon blue">
+        Calle 97A No. 53 - 01
+      </p>
+      <h4>POLÍTICAS</h4>
+      <p><a href="#">Políticas de privacidad</a></p>
     </section>
+
+    <!-- === SERVICIOS === -->
     <section>
       <h4>SERVICIOS</h4>
-      <ul>
+      <ul class="no-icons">
         <li><a href="#">Soluciones profesionales</a></li>
         <li><a href="#">Nuevos productos</a></li>
         <li><a href="#">Tiendas</a></li>
         <li><a href="#">Masajes</a></li>
       </ul>
     </section>
+
+    <!-- === NOSOTROS === -->
     <section>
       <h4>NOSOTROS</h4>
       <ul>
-        <li><a href="#">Mesa de servicio</a></li>
-        <li><a href="#">Mind Center</a></li>
-        <li><a href="#">Canal de denuncias</a></li>
-        <li><a href="#">Mapa del sitio</a></li>
+        <li>
+          <img src="{% static 'core/img/icons/services_1.png' %}" alt="Mesa de servicio" class="footer-icon blue">
+          <a href="#">Mesa de servicio</a>
+        </li>
+        <li>
+          <img src="{% static 'core/img/icons/services_2.png' %}" alt="Mind Center" class="footer-icon blue">
+          <a href="#">Mind Center</a>
+        </li>
+        <li>
+          <img src="{% static 'core/img/icons/services_3.png' %}" alt="Canal de denuncias" class="footer-icon blue">
+          <a href="#">Canal de denuncias</a>
+        </li>
+        <li>
+          <img src="{% static 'core/img/icons/services_4.png' %}" alt="Mapa del sitio" class="footer-icon blue">
+          <a href="#">Mapa del sitio</a>
+        </li>
       </ul>
     </section>
+
+    <!-- === REDES SOCIALES === -->
     <section>
       <h4>SÍGUENOS</h4>
-      <p>🔗 LinkedIn · Facebook · Instagram · YouTube</p>
+      <ul class="social-list">
+        <li>
+          <img src="{% static 'core/img/icons/linkedin.png' %}" alt="LinkedIn" class="footer-icon blue">
+          <a href="#">LinkedIn</a>
+        </li>
+        <li>
+          <img src="{% static 'core/img/icons/facebook.png' %}" alt="Facebook" class="footer-icon blue">
+          <a href="#">Facebook</a>
+        </li>
+        <li>
+          <img src="{% static 'core/img/icons/instagram.png' %}" alt="Instagram" class="footer-icon blue">
+          <a href="#">Instagram</a>
+        </li>
+        <li>
+          <img src="{% static 'core/img/icons/youtube.png' %}" alt="YouTube" class="footer-icon blue">
+          <a href="#">YouTube</a>
+        </li>
+      </ul>
     </section>
   </div>
-  <div class="footer-copy">© {% now "Y" %} Lunaris Beauty — Todos los derechos reservados.</div>
+
+  <div class="footer-copy">
+    © {% now "Y" %} Lunaris Beauty — Todos los derechos reservados.
+  </div>
 </footer>
