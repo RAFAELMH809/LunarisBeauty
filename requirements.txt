@@ -1,17 +1,25 @@
-# Core web
+# === Core web ===
 Django>=5.1
 whitenoise>=6.6
 django-environ>=0.11
 pillow>=10.3
 
-# ASGI/WSGI servers (for production)
+# === ASGI/WSGI servers (for production) ===
 uvicorn[standard]>=0.30
 gunicorn>=22.0
 
-# Database client (PostgreSQL) — optional but recommended if you use Postgres
+# === Database client (PostgreSQL, for Render) ===
 psycopg[binary]>=3.2
+dj-database-url>=2.2  # 👈 necesario para configurar DATABASE_URL de Render automáticamente
 
-# Code quality (optional but handy in dev)
+# === Optional: Security & Compression ===
+brotli>=1.1          # mejora la compresión de WhiteNoise en producción
+
+# === Dev & Quality tools (optional) ===
 ruff>=0.5
 black>=24.8
 mypy>=1.10
+
+cloudinary>=1.40
+django-cloudinary-storage>=0.3.0
+
