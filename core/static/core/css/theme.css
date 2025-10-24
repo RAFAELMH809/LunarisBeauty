@@ -419,4 +419,81 @@ header.nav {
   font-style: normal;
   letter-spacing: 0.03em;
 }
+.product-detail {
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 2rem;
+}
 
+/* === Flechas para las secciones de productos === */
+.section-with-arrows {
+  position: relative; /* 👈 hace que las flechas se posicionen respecto a esta sección */
+}
+
+.arrow-btn {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: none;
+  background: none;
+  color: #000000;
+  cursor: pointer;
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  opacity: 0.9;
+}
+
+.arrow-btn:hover {
+  transform: scale(1.1);
+  opacity: 1;
+}
+
+.arrow-left::before {
+  content: "❮";
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.arrow-right::before {
+  content: "❯";
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.arrow-left { left: -60px; }  /* se separan un poco de la grilla */
+.arrow-right { right: -60px; }
+/* === Selector de tamaño en el modal === */
+.modal__size {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.modal__label {
+  font-weight: 600;
+  color: #547b6a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.9rem;
+}
+
+.modal__select {
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  font-family: var(--font);
+  background: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.modal__select:hover,
+.modal__select:focus {
+  border-color: var(--brand-600);
+  outline: none;
+}

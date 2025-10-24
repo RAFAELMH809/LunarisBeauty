@@ -46,3 +46,4 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, 300); // Espera 300 ms antes de calcular (importante)
 });
+
