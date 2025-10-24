@@ -1,3 +1,5 @@
+import os
+import dj_database_url
 """
 Django settings for config project.
 
@@ -25,7 +27,8 @@ SECRET_KEY = "django-insecure-$)i29!mkvrro9z0v=g6%!7jxv%@ep9k71yc#ms78a(7qnsuu5(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['.onrender.com', 'localhost']
+
 
 
 # Application definition
@@ -116,11 +119,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = "static/"
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
-
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEBUG = 'RENDER' not in os.environ
+
 
 # URL a la que se redirige después de iniciar sesión
 LOGIN_REDIRECT_URL = "index"
