@@ -1,0 +1,3 @@
+config/settings.py merge=theirs
+render.yaml merge=theirs
+requirements.txt merge=theirs
