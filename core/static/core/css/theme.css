@@ -81,13 +81,13 @@ p{color:var(--muted);margin:.5rem 0}
 @media (max-width:640px){.grid-products{grid-template-columns:1fr}}
 
 /* ================= HERO SLIDE ================= */
+html, body {
+  overflow-x: hidden;
+}
+
 .hero-wrap {
   position: relative;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  width: 100%;
   overflow: hidden;
 }
 

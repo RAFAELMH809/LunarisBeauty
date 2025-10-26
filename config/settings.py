@@ -1,6 +1,9 @@
 import os
 import dj_database_url
 from pathlib import Path
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # ==============================
 # BASE DIR
@@ -15,10 +18,8 @@ SECRET_KEY = os.getenv(
     "django-insecure-$)i29!mkvrro9z0v=g6%!7jxv%@ep9k71yc#ms78a(7qnsuu5(",
 )
 
-# DEBUG dinámico: False en Render (producción)
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
-# Hosts permitidos
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
 
 # ==============================
@@ -33,7 +34,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "core",
     "cloudinary",
-    "cloudinary_storage",  # tu app principal
+    "cloudinary_storage",
 ]
 
 # ==============================
@@ -49,11 +50,10 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# WhiteNoise (sirve archivos estáticos en Render)
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 # ==============================
-# CONFIGURACIÓN DE RUTAS Y PLANTILLAS
+# TEMPLATES
 # ==============================
 ROOT_URLCONF = "config.urls"
 
@@ -75,7 +75,7 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 # ==============================
-# BASE DE DATOS (dinámica)
+# BASE DE DATOS
 # ==============================
 DATABASES = {
     "default": dj_database_url.config(
@@ -104,7 +104,7 @@ USE_I18N = True
 USE_TZ = True
 
 # ==============================
-# ARCHIVOS ESTÁTICOS Y MULTIMEDIA
+# ARCHIVOS ESTÁTICOS Y MEDIA
 # ==============================
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -114,7 +114,19 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 # ==============================
-# CONFIG LOGIN
+# CLOUDINARY CONFIG
+# ==============================
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
+    secure=True,
+)
+
+DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+
+# ==============================
+# LOGIN
 # ==============================
 LOGIN_REDIRECT_URL = "index"
 LOGIN_URL = "login"
@@ -123,10 +135,10 @@ LOGIN_URL = "login"
 # AUTO FIELD
 # ==============================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
 
 # ==============================
-# DEBUG INFO (opcional en logs)
+# DEBUG LOG (solo local)
 # ==============================
 if DEBUG:
-    print(f"🔧 DEBUG MODE ON — usando base de datos: {DATABASES['default']}")
+    print(f"🔧 DEBUG MODE ON — DB: {DATABASES['default']}")
+    print(f"☁️  Cloudinary: {os.getenv('CLOUDINARY_CLOUD_NAME')}")
