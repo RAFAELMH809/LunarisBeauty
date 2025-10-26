@@ -139,6 +139,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # ==============================
 # DEBUG LOG (solo local)
 # ==============================
+if not DEBUG:
+    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
+    MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
+    MEDIA_ROOT = None
+
 if DEBUG:
     print(f"🔧 DEBUG MODE ON — DB: {DATABASES['default']}")
     print(f"☁️  Cloudinary: {os.getenv('CLOUDINARY_CLOUD_NAME')}")
