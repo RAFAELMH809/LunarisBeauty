@@ -4,7 +4,8 @@ from pathlib import Path
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
-
+import dotenv
+load_dotenv()
 # ==============================
 # BASE DIR
 # ==============================
