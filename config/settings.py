@@ -1,16 +1,22 @@
 import os
-import dj_database_url
 from pathlib import Path
+import dj_database_url
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 from dotenv import load_dotenv
-load_dotenv()
 
 # ==============================
-# BASE DIR
+# BASE DIR y .env
 # ==============================
 BASE_DIR = Path(__file__).resolve().parent.parent
+dotenv_path = BASE_DIR / ".env"
+
+if dotenv_path.exists():
+    load_dotenv(dotenv_path)
+    print(f"✅ .env cargado desde: {dotenv_path}")
+else:
+    print(f"⚠️ No se encontró el archivo .env en {dotenv_path}")
 
 # ==============================
 # SEGURIDAD
@@ -21,8 +27,10 @@ SECRET_KEY = os.getenv(
 )
 
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-
 ALLOWED_HOSTS = ["localhost", "127.0.0.1", ".onrender.com"]
+
+print(f"🔧 DEBUG = {DEBUG}")
+print(f"☁️  CLOUD_NAME = {os.getenv('CLOUDINARY_CLOUD_NAME')}")
 
 # ==============================
 # APLICACIONES
@@ -44,6 +52,7 @@ INSTALLED_APPS = [
 # ==============================
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",  # debe ir justo después de SecurityMiddleware
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -51,8 +60,6 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
-
-MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
 # ==============================
 # TEMPLATES
@@ -110,10 +117,34 @@ USE_TZ = True
 # ==============================
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+# Django 5+ STORAGE configuration
+if DEBUG:
+    # En modo local
+    MEDIA_URL = "/media/"
+    MEDIA_ROOT = BASE_DIR / "media"
+
+    STORAGES = {
+        "default": {
+            "BACKEND": "django.core.files.storage.FileSystemStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+
+else:
+    # En Render (producción)
+    STORAGES = {
+        "default": {
+            "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+        },
+        "staticfiles": {
+            "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        },
+    }
+    MEDIA_URL = ""
+    MEDIA_ROOT = None
 
 # ==============================
 # CLOUDINARY CONFIG
@@ -125,8 +156,6 @@ cloudinary.config(
     secure=True,
 )
 
-DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-
 # ==============================
 # LOGIN
 # ==============================
@@ -137,15 +166,3 @@ LOGIN_URL = "login"
 # AUTO FIELD
 # ==============================
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-# ==============================
-# DEBUG LOG (solo local)
-# ==============================
-if not DEBUG:
-    DEFAULT_FILE_STORAGE = "cloudinary_storage.storage.MediaCloudinaryStorage"
-    MEDIA_URL = f"https://res.cloudinary.com/{os.getenv('CLOUDINARY_CLOUD_NAME')}/"
-    MEDIA_ROOT = None
-
-if DEBUG:
-    print(f"🔧 DEBUG MODE ON — DB: {DATABASES['default']}")
-    print(f"☁️  Cloudinary: {os.getenv('CLOUDINARY_CLOUD_NAME')}")
