@@ -49,14 +49,11 @@
             <button class="qty__btn" data-qty="1">+</button>
           </div>
           <!-- Toggle de tamaño (no funcional por ahora) -->
-          <div class="modal__size">
+          <div class="modal__size" id="cartModalSizeContainer" style="display:none;">
             <label for="cartModalSize" class="modal__label">Tamaño</label>
-            <select id="cartModalSize" class="modal__select">
-              <option value="chico">Chico</option>
-              <option value="mediano" selected>Mediano</option>
-              <option value="grande">Grande</option>
-            </select>
+            <select id="cartModalSize" class="modal__select"></select>
           </div>
+
 
 
           <button id="cartModalAdd" class="btn btn-primary" style="width:100%; margin-top:12px;">
@@ -92,6 +89,12 @@
               <input id="detailsQty" class="qty__input" type="number" min="1" value="1" inputmode="numeric">
               <button class="qty__btn" data-qty="1">+</button>
             </div>
+            <!-- Selector de tamaño (solo si aplica) -->
+            <div class="modal__size" id="detailsSizeContainer" style="display:none;">
+              <label for="detailsSize" class="modal__label">Tamaño</label>
+              <select id="detailsSize" class="modal__select"></select>
+            </div>
+
 
             <button id="detailsAdd" class="btn btn-primary" style="width:100%;margin-top:10px;">
               Agregar al carrito

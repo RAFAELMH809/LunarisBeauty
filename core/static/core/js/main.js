@@ -50,42 +50,92 @@ document.addEventListener("DOMContentLoaded", () => {
   const mAdd   = $("#cartModalAdd");
   const mMore  = $("#cartModalMore");
 
-  function openCartModal(data){
-  if(!cartModal) return;
-  mImg.src = data.image || ""; mImg.alt = data.name || "Producto";
+  function openCartModal(data) {
+  if (!cartModal) return;
+
+  mImg.src = data.image || "";
+  mImg.alt = data.name || "Producto";
   mTitle.textContent = data.name || "";
-  mPrice.textContent = money(data.price || 0);
   mQty.value = 1;
 
-  // (Líneas que usaban mSize eliminadas)
+  // 🟢 Mostrar selector de tamaños si existen
+  const sizeContainer = $("#cartModalSizeContainer");
+  const sizeSelect = $("#cartModalSize");
+  sizeSelect.innerHTML = "";
+
+  if (data.sizes && data.sizes.length > 0) {
+    sizeContainer.style.display = "block";
+
+    data.sizes.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.size;
+      opt.textContent = `${s.size.charAt(0).toUpperCase() + s.size.slice(1)} - $${s.price}`;
+      opt.dataset.price = s.price;
+      sizeSelect.appendChild(opt);
+    });
+
+    // precio inicial del primer tamaño
+    mPrice.textContent = money(Number(data.sizes[0].price));
+  } else {
+    sizeContainer.style.display = "none";
+    mPrice.textContent = money(data.price || 0);
+  }
+
+  // Cambiar precio cuando selecciona otro tamaño
+  sizeSelect?.addEventListener("change", e => {
+    const selected = e.target.selectedOptions[0];
+    mPrice.textContent = money(Number(selected.dataset.price));
+  });
 
   mMore.dataset.payload = JSON.stringify(data);
-  cartModal.classList.add("is-open"); document.body.style.overflow = "hidden";
+  cartModal.classList.add("is-open");
+  document.body.style.overflow = "hidden";
 }
+
+  // Cambiar precio al seleccionar tamaño
+document.getElementById("cartModalSize")?.addEventListener("change", e => {
+  const opt = e.target.selectedOptions[0];
+  if (!opt) return;
+  const text = opt.textContent;
+  const price = parseFloat(text.split("$")[1]) || 0;
+  mPrice.textContent = money(price);
+});
+
   function closeCartModal(){ cartModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
   cartModal?.addEventListener("click", e=>{ if(e.target.matches("[data-close-modal]")) closeCartModal(); });
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCartModal(); });
 
   // Abre modal chico desde la card
-  $$(".btn-cart[data-action='add-to-cart']").forEach(btn=>{
-    btn.addEventListener("click", ()=>{
-      const data = {
-        id:   btn.dataset.id, // Ahora siempre tenemos ID
-        name: btn.dataset.name,
-        price: Number(btn.dataset.price||0),
-        image: btn.dataset.image,
-        url:   btn.dataset.url || "#",
-        sizes: btn.dataset.sizes ? btn.dataset.sizes.split("|") : null,
-        // Leemos directamente del data-*. Si está vacío, se pasa vacío.
-        desc:  btn.dataset.desc,
-        benefits: btn.dataset.benefits ? btn.dataset.benefits.split("|") : [], // Array vacío si no hay
-        ingredients: btn.dataset.ingredients,
-        howto: btn.dataset.howto,
-        warnings: btn.dataset.warnings
-      };
-      openCartModal(data);
-    });
+  $$(".btn-cart[data-action='add-to-cart']").forEach(btn => {
+  btn.addEventListener("click", () => {
+    let parsedSizes = [];
+    try {
+      // 🟢 Intentar convertir el JSON embebido
+      parsedSizes = JSON.parse(btn.dataset.sizes || "[]");
+    } catch (e) {
+      console.warn("Error al parsear tamaños:", e);
+      parsedSizes = [];
+    }
+
+    const data = {
+      id: btn.dataset.id,
+      name: btn.dataset.name,
+      image: btn.dataset.image,
+      url: btn.dataset.url || "#",
+      sizes: parsedSizes,
+      // si no hay tamaños, toma el primer precio o 0
+      price: parsedSizes.length ? parsedSizes[0].price : Number(btn.dataset.price || 0),
+      desc: btn.dataset.desc,
+      benefits: btn.dataset.benefits ? btn.dataset.benefits.split("|") : [],
+      ingredients: btn.dataset.ingredients,
+      howto: btn.dataset.howto,
+      warnings: btn.dataset.warnings
+    };
+
+    openCartModal(data);
   });
+});
+
 
   // ==========================================================
   // ============== MODAL DETALLES (grande) ===================
@@ -102,24 +152,62 @@ document.addEventListener("DOMContentLoaded", () => {
   const dHowTo = $("#detailsHowTo");
   const dWarn  = $("#detailsWarnings");
 
-  function openDetails(data){
-  if(!detModal) return;
-  dImg.src = data.image || ""; dImg.alt = data.name || "Producto";
+function openDetails(data) {
+  if (!detModal) return;
+
+  // === Datos básicos ===
+  dImg.src = data.image || "";
+  dImg.alt = data.name || "Producto";
   dTitle.textContent = data.name || "";
-  dPrice.textContent = money(data.price || 0);
   dQty.value = 1;
 
-  // (Líneas que usaban dSize eliminadas)
+  // === Selector de tamaño ===
+  const sizeContainer = $("#detailsSizeContainer");
+  const sizeSelect = $("#detailsSize");
+  sizeSelect.innerHTML = "";
 
-  dDesc.textContent = data.desc || "";
-  dIngr.textContent = data.ingredients || "";
-  dHowTo.textContent = data.howto || "";
-  dWarn.textContent  = data.warnings || "";
+  if (data.sizes && data.sizes.length > 0) {
+    sizeContainer.style.display = "block";
+    data.sizes.forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s.size;
+      opt.textContent = `${s.size.charAt(0).toUpperCase() + s.size.slice(1)} - $${s.price}`;
+      opt.dataset.price = s.price;
+      sizeSelect.appendChild(opt);
+    });
+
+    // Precio inicial = primer tamaño
+    dPrice.textContent = money(Number(data.sizes[0].price));
+  } else {
+    sizeContainer.style.display = "none";
+    dPrice.textContent = money(data.price || 0);
+  }
+
+  // === Actualizar precio al cambiar tamaño ===
+  sizeSelect?.addEventListener("change", e => {
+    const selected = e.target.selectedOptions[0];
+    dPrice.textContent = money(Number(selected.dataset.price));
+  });
+
+  // === Info del producto ===
+  dDesc.textContent = data.desc || "Sin descripción disponible.";
+  dIngr.textContent = data.ingredients || "—";
+  dHowTo.textContent = data.howto || "—";
+  dWarn.textContent = data.warnings || "—";
+
   dBenefits.innerHTML = "";
-  (data.benefits || []).forEach(b=>{ const li=document.createElement("li"); li.textContent=b; dBenefits.appendChild(li); });
-  detModal.classList.add("is-open"); document.body.style.overflow = "hidden";
-  detModal.dataset.payload = JSON.stringify(data); // guardamos para add
+  (data.benefits || []).forEach(b => {
+    const li = document.createElement("li");
+    li.textContent = b;
+    dBenefits.appendChild(li);
+  });
+
+  // === Mostrar modal ===
+  detModal.classList.add("is-open");
+  document.body.style.overflow = "hidden";
+  detModal.dataset.payload = JSON.stringify(data);
 }
+
   function closeDetails(){ detModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
   detModal?.addEventListener("click", e=>{ if(e.target.matches("[data-close-modal]")) closeDetails(); });
   document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDetails(); });
@@ -206,7 +294,7 @@ document.addEventListener("DOMContentLoaded", () => {
       row.innerHTML = `
         <img class="cartItem__img" src="${item.image}" alt="${item.name}">
         <div>
-          <div class="cartItem__name">${item.name}</div>
+          <div class="cartItem__name">${item.name} ${item.size ? `(${item.size})` : ""}</div>
           <div class="cartItem__qty">
             <button class="btn-qty" data-act="dec" data-key="${item.key}">−</button>
             <input type="number" min="1" value="${item.qty}" data-key="${item.key}">
@@ -291,31 +379,65 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Conectar "Agregar al carrito" de los dos modales
-  mAdd?.addEventListener("click", ()=>{
-    // (Validación de tamaño eliminada)
-    const qty = Math.max(1, parseInt(mQty.value||"1",10));
-    const data = JSON.parse(mMore?.dataset.payload || "{}");
-    addToCart({
-      id: data.id || (data.name||"").toLowerCase().replace(/\s+/g,'-'),
-      name: data.name, image: data.image, price: Number(data.price||0),
-      // (Campo 'size' eliminado)
-      qty
-    });
-    closeCartModal();
+ mAdd?.addEventListener("click", () => {
+  const qty = Math.max(1, parseInt(mQty.value || "1", 10));
+  const data = JSON.parse(mMore?.dataset.payload || "{}");
+
+  let price = 0;
+  let size = "";
+  const sizeSelect = $("#cartModalSize");
+
+  if (sizeSelect && sizeSelect.value) {
+    size = sizeSelect.value;
+    price = Number(sizeSelect.selectedOptions[0].dataset.price);
+  } else if (data.sizes && data.sizes.length > 0) {
+    price = Number(data.sizes[0].price);
+  } else {
+    price = Number(data.price || 0);
+  }
+
+  addToCart({
+    id: data.id,
+    name: data.name,
+    image: data.image,
+    price,
+    size,
+    qty
   });
 
-  dAdd?.addEventListener("click", ()=>{
-    // (Validación de tamaño eliminada)
-    const qty = Math.max(1, parseInt(dQty.value||"1",10));
-    const data = JSON.parse(detModal?.dataset.payload || "{}");
-    addToCart({
-      id: data.id || (data.name||"").toLowerCase().replace(/\s+/g,'-'),
-      name: data.name, image: data.image, price: Number(data.price||0),
-      // (Campo 'size' eliminado)
-      qty
-    });
-    closeDetails();
+  closeCartModal();
+});
+
+
+dAdd?.addEventListener("click", () => {
+  const qty = Math.max(1, parseInt(dQty.value || "1", 10));
+  const data = JSON.parse(detModal?.dataset.payload || "{}");
+
+  let price = 0;
+  let size = "";
+  const sizeSelect = $("#detailsSize");
+
+  if (sizeSelect && sizeSelect.value) {
+    size = sizeSelect.value;
+    price = Number(sizeSelect.selectedOptions[0].dataset.price);
+  } else if (data.sizes && data.sizes.length > 0) {
+    price = Number(data.sizes[0].price);
+  } else {
+    price = Number(data.price || 0);
+  }
+
+  addToCart({
+    id: data.id,
+    name: data.name,
+    image: data.image,
+    price,
+    size,
+    qty
   });
+
+  closeDetails();
+});
+
   // Función para obtener el token CSRF (necesario para POST)
   function getCSRFToken() {
     const cookieValue = document.cookie

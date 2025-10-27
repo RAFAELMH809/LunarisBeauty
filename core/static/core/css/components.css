@@ -244,8 +244,7 @@
 }
 
 /* ==== MODAL GRANDE (DETALLES) ==== */
-.modal--lg .modal__dialog{ max-width: 1080px; }
-.details{ padding: 22px; }
+
 .details__grid{
   display:grid; grid-template-columns: 1.1fr 1fr; gap: 24px; align-items:start;
 }

@@ -296,6 +296,7 @@ header.nav {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 10.2rem;
   height: 36px;
   line-height: 36px;     /* 👈 iguala la altura del texto */
   padding: 0 1rem;
@@ -454,18 +455,18 @@ header.nav {
 
 .arrow-left::before {
   content: "❮";
-  font-size: 2.5rem;
+  font-size: 2rem;
   line-height: 1;
 }
 
 .arrow-right::before {
   content: "❯";
-  font-size: 2.5rem;
+  font-size: 2rem;
   line-height: 1;
 }
 
-.arrow-left { left: -60px; }  /* se separan un poco de la grilla */
-.arrow-right { right: -60px; }
+.arrow-left { left: -30px; }  /* se separan un poco de la grilla */
+.arrow-right { right: -30px; }
 /* === Selector de tamaño en el modal === */
 .modal__size {
   margin: 1rem 0;
@@ -497,3 +498,19 @@ header.nav {
   border-color: var(--brand-600);
   outline: none;
 }
+
+/* Corrige scroll y tamaño del modal grande */
+.modal--lg .modal__dialog {
+  max-width: 1080px;
+  max-height: 90vh;        /* 🔹 evita que se desborde verticalmente */
+  overflow-y: auto;      /* 🔹 activa scroll interno */
+  border-radius: 20px;
+}
+
+.details {
+  padding: 22px;
+  max-height: 100%;      /* 🔹 usa todo el alto disponible del modal */
+  overflow-y: auto;      /* 🔹 permite desplazarse dentro del modal */
+  scroll-behavior: smooth;
+}
+
