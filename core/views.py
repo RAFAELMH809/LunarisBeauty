@@ -135,23 +135,33 @@ def payment_view(request):
 
                 # 4. Procesamos el carrito
                 for item in cart_data:
-                    product = products_map.get(str(item.get("id")))
+                      product_id = str(item.get("id"))
+                      size_name = item.get("size", "").strip()
+                      quantity = int(item.get("qty", 1))
 
-                    if product:
-                        quantity = int(item.get("qty", 1))
-                        # ¡Importante! Usamos el precio de la BD, no el del JS
-                        price = product.price
-                        subtotal = price * quantity
+                      product = products_map.get(product_id)
 
-                        cart_items.append(
-                            {
-                                "product": product,
-                                "size": item.get("size", "-"),
-                                "quantity": quantity,
-                                "subtotal": subtotal,
-                            }
-                        )
-                        total_price += subtotal
+                      if not product:
+                          continue
+
+                      # Buscar el precio según el tamaño
+                      size_obj = product.sizes.filter(size=size_name).first()
+                      if not size_obj:
+                        return redirect("index")  # Tamaño inválido, carrito corrupto
+
+                      price = Decimal(size_obj.price)
+                      subtotal = price * quantity
+
+                      cart_items.append({
+                       "product": product,
+                       "size": size_name,
+                       "quantity": quantity,
+                       "price": price,
+                       "subtotal": subtotal,
+                    })
+ 
+                      total_price += subtotal
+
 
             except json.JSONDecodeError:
                 # Manejar el error si el JSON es inválido
