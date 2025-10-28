@@ -1,18 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
   // ====== utilitarios ======
-  const $  = (s, ctx=document) => ctx.querySelector(s);
-  const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
-  const money = v => Number(v||0).toLocaleString("es-MX",{style:"currency",currency:"MXN"});
+  const $ = (s, ctx = document) => ctx.querySelector(s);
+  const $$ = (s, ctx = document) => Array.from(ctx.querySelectorAll(s));
+  const money = v => Number(v || 0).toLocaleString("es-MX", { style: "currency", currency: "MXN" });
 
   const img = $("#hero-img");
   const slides = (window.HERO_SLIDES || []).slice();
-  let hi=0;
+  let hi = 0;
   const left = $(".hero-arrow.left");
   const right = $(".hero-arrow.right");
-  function showHero(idx){ if(!slides.length || !img) return; hi=(idx+slides.length)%slides.length; img.src=slides[hi]; }
-  if (left && right){
-    if (slides.length <= 1){ left.style.display="none"; right.style.display="none"; }
-    else { left.addEventListener("click", ()=>showHero(hi-1)); right.addEventListener("click", ()=>showHero(hi+1)); }
+  function showHero(idx) { if (!slides.length || !img) return; hi = (idx + slides.length) % slides.length; img.src = slides[hi]; }
+  if (left && right) {
+    if (slides.length <= 1) { left.style.display = "none"; right.style.display = "none"; }
+    else { left.addEventListener("click", () => showHero(hi - 1)); right.addEventListener("click", () => showHero(hi + 1)); }
   }
   showHero(hi);
 
@@ -43,183 +43,196 @@ document.addEventListener("DOMContentLoaded", () => {
   // =============== MODAL CHICO ===============
   // ==========================================================
   const cartModal = $("#cart-modal");
-  const mImg   = $("#cartModalImg");
+  const mImg = $("#cartModalImg");
   const mTitle = $("#cartModalTitle");
   const mPrice = $("#cartModalPrice");
-  const mQty   = $("#cartModalQty");
-  const mAdd   = $("#cartModalAdd");
-  const mMore  = $("#cartModalMore");
+  const mQty = $("#cartModalQty");
+  const mAdd = $("#cartModalAdd");
+  const mMore = $("#cartModalMore");
 
   function openCartModal(data) {
-  if (!cartModal) return;
+    if (!cartModal) return;
 
-  mImg.src = data.image || "";
-  mImg.alt = data.name || "Producto";
-  mTitle.textContent = data.name || "";
-  mQty.value = 1;
+    mImg.src = data.image || "";
+    mImg.alt = data.name || "Producto";
+    mTitle.textContent = data.name || "";
+    mQty.value = 1;
 
-  // 🟢 Mostrar selector de tamaños si existen
-  const sizeContainer = $("#cartModalSizeContainer");
-  const sizeSelect = $("#cartModalSize");
-  sizeSelect.innerHTML = "";
+    // 🟢 Mostrar selector de tamaños si existen
+    const sizeContainer = $("#cartModalSizeContainer");
+    const sizeSelect = $("#cartModalSize");
+    sizeSelect.innerHTML = "";
 
-  if (data.sizes && data.sizes.length > 0) {
-    sizeContainer.style.display = "block";
+    if (data.sizes && data.sizes.length > 0) {
+      sizeContainer.style.display = "block";
 
-    data.sizes.forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s.size;
-      opt.textContent = `${s.size.charAt(0).toUpperCase() + s.size.slice(1)} - $${s.price}`;
-      opt.dataset.price = s.price;
-      sizeSelect.appendChild(opt);
+      data.sizes.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.size;
+        opt.textContent = `${s.size.charAt(0).toUpperCase() + s.size.slice(1)} - $${s.price}`;
+        opt.dataset.price = s.price;
+        sizeSelect.appendChild(opt);
+      });
+
+      // precio inicial del primer tamaño
+      mPrice.textContent = money(Number(data.sizes[0].price));
+    } else {
+      sizeContainer.style.display = "none";
+      mPrice.textContent = money(data.price || 0);
+    }
+
+    // Cambiar precio cuando selecciona otro tamaño
+    sizeSelect?.addEventListener("change", e => {
+      const selected = e.target.selectedOptions[0];
+      mPrice.textContent = money(Number(selected.dataset.price));
     });
 
-    // precio inicial del primer tamaño
-    mPrice.textContent = money(Number(data.sizes[0].price));
-  } else {
-    sizeContainer.style.display = "none";
-    mPrice.textContent = money(data.price || 0);
+    mMore.dataset.payload = JSON.stringify(data);
+    cartModal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
   }
 
-  // Cambiar precio cuando selecciona otro tamaño
-  sizeSelect?.addEventListener("change", e => {
-    const selected = e.target.selectedOptions[0];
-    mPrice.textContent = money(Number(selected.dataset.price));
+  // Cambiar precio al seleccionar tamaño
+  document.getElementById("cartModalSize")?.addEventListener("change", e => {
+    const opt = e.target.selectedOptions[0];
+    if (!opt) return;
+    const text = opt.textContent;
+    const price = parseFloat(text.split("$")[1]) || 0;
+    mPrice.textContent = money(price);
   });
 
-  mMore.dataset.payload = JSON.stringify(data);
-  cartModal.classList.add("is-open");
-  document.body.style.overflow = "hidden";
-}
-
-  // Cambiar precio al seleccionar tamaño
-document.getElementById("cartModalSize")?.addEventListener("change", e => {
-  const opt = e.target.selectedOptions[0];
-  if (!opt) return;
-  const text = opt.textContent;
-  const price = parseFloat(text.split("$")[1]) || 0;
-  mPrice.textContent = money(price);
-});
-
-  function closeCartModal(){ cartModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
-  cartModal?.addEventListener("click", e=>{ if(e.target.matches("[data-close-modal]")) closeCartModal(); });
-  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeCartModal(); });
+  function closeCartModal() { cartModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
+  cartModal?.addEventListener("click", e => { if (e.target.matches("[data-close-modal]")) closeCartModal(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeCartModal(); });
 
   // Abre modal chico desde la card
   $$(".btn-cart[data-action='add-to-cart']").forEach(btn => {
-  btn.addEventListener("click", () => {
-    let parsedSizes = [];
-    try {
-      // 🟢 Intentar convertir el JSON embebido
-      parsedSizes = JSON.parse(btn.dataset.sizes || "[]");
-    } catch (e) {
-      console.warn("Error al parsear tamaños:", e);
-      parsedSizes = [];
-    }
+    btn.addEventListener("click", () => {
+      let parsedSizes = [];
+      try {
+        // 🟢 Intentar convertir el JSON embebido
+        parsedSizes = JSON.parse(btn.dataset.sizes || "[]");
+      } catch (e) {
+        console.warn("Error al parsear tamaños:", e);
+        parsedSizes = [];
+      }
+      console.log("BENEFICIOS PRINCIPAL =>", btn.dataset.benefits);
 
-    const data = {
-      id: btn.dataset.id,
-      name: btn.dataset.name,
-      image: btn.dataset.image,
-      url: btn.dataset.url || "#",
-      sizes: parsedSizes,
-      // si no hay tamaños, toma el primer precio o 0
-      price: parsedSizes.length ? parsedSizes[0].price : Number(btn.dataset.price || 0),
-      desc: btn.dataset.desc,
-      benefits: btn.dataset.benefits ? btn.dataset.benefits.split("|") : [],
-      ingredients: btn.dataset.ingredients,
-      howto: btn.dataset.howto,
-      warnings: btn.dataset.warnings
-    };
+      let parsedBenefits = [];
+      try {
+        const raw = btn.dataset.benefits || "";
+        if (raw.trim().startsWith("[")) {
+          parsedBenefits = JSON.parse(raw);  // viene como JSON
+        } else {
+          parsedBenefits = raw.split("|");   // viene como texto "A|B|C"
+        }
+      } catch {
+        parsedBenefits = [];
+      }
+      
+      const data = {
+        id: btn.dataset.id,
+        name: btn.dataset.name,
+        image: btn.dataset.image,
+        url: btn.dataset.url || "#",
+        sizes: parsedSizes,
+        // si no hay tamaños, toma el primer precio o 0
+        price: parsedSizes.length ? parsedSizes[0].price : Number(btn.dataset.price || 0),
+        desc: btn.dataset.desc,
+        benefits: parsedBenefits,
+        ingredients: btn.dataset.ingredients,
+        howto: btn.dataset.howto,
+        warnings: btn.dataset.warnings
+      };
 
-    openCartModal(data);
+      openCartModal(data);
+    });
   });
-});
 
 
   // ==========================================================
   // ============== MODAL DETALLES (grande) ===================
   // ==========================================================
   const detModal = $("#details-modal");
-  const dImg   = $("#detailsImg");
+  const dImg = $("#detailsImg");
   const dTitle = $("#detailsTitle");
   const dPrice = $("#detailsPrice");
-  const dQty   = $("#detailsQty");
-  const dAdd   = $("#detailsAdd");
-  const dDesc  = $("#detailsDesc");
+  const dQty = $("#detailsQty");
+  const dAdd = $("#detailsAdd");
+  const dDesc = $("#detailsDesc");
   const dBenefits = $("#detailsBenefits");
-  const dIngr  = $("#detailsIngredients");
+  const dIngr = $("#detailsIngredients");
   const dHowTo = $("#detailsHowTo");
-  const dWarn  = $("#detailsWarnings");
+  const dWarn = $("#detailsWarnings");
 
-function openDetails(data) {
-  if (!detModal) return;
+  function openDetails(data) {
+    if (!detModal) return;
 
-  // === Datos básicos ===
-  dImg.src = data.image || "";
-  dImg.alt = data.name || "Producto";
-  dTitle.textContent = data.name || "";
-  dQty.value = 1;
+    // === Datos básicos ===
+    dImg.src = data.image || "";
+    dImg.alt = data.name || "Producto";
+    dTitle.textContent = data.name || "";
+    dQty.value = 1;
 
-  // === Selector de tamaño ===
-  const sizeContainer = $("#detailsSizeContainer");
-  const sizeSelect = $("#detailsSize");
-  sizeSelect.innerHTML = "";
+    // === Selector de tamaño ===
+    const sizeContainer = $("#detailsSizeContainer");
+    const sizeSelect = $("#detailsSize");
+    sizeSelect.innerHTML = "";
 
-  if (data.sizes && data.sizes.length > 0) {
-    sizeContainer.style.display = "block";
-    data.sizes.forEach(s => {
-      const opt = document.createElement("option");
-      opt.value = s.size;
-      opt.textContent = `${s.size.charAt(0).toUpperCase() + s.size.slice(1)} - $${s.price}`;
-      opt.dataset.price = s.price;
-      sizeSelect.appendChild(opt);
+    if (data.sizes && data.sizes.length > 0) {
+      sizeContainer.style.display = "block";
+      data.sizes.forEach(s => {
+        const opt = document.createElement("option");
+        opt.value = s.size;
+        opt.textContent = `${s.size.charAt(0).toUpperCase() + s.size.slice(1)} - $${s.price}`;
+        opt.dataset.price = s.price;
+        sizeSelect.appendChild(opt);
+      });
+
+      // Precio inicial = primer tamaño
+      dPrice.textContent = money(Number(data.sizes[0].price));
+    } else {
+      sizeContainer.style.display = "none";
+      dPrice.textContent = money(data.price || 0);
+    }
+
+    // === Actualizar precio al cambiar tamaño ===
+    sizeSelect?.addEventListener("change", e => {
+      const selected = e.target.selectedOptions[0];
+      dPrice.textContent = money(Number(selected.dataset.price));
     });
 
-    // Precio inicial = primer tamaño
-    dPrice.textContent = money(Number(data.sizes[0].price));
-  } else {
-    sizeContainer.style.display = "none";
-    dPrice.textContent = money(data.price || 0);
+    // === Info del producto ===
+    dDesc.textContent = data.desc || "Sin descripción disponible.";
+    dIngr.textContent = data.ingredients || "—";
+    dHowTo.textContent = data.howto || "—";
+    dWarn.textContent = data.warnings || "—";
+
+    dBenefits.innerHTML = "";
+    (data.benefits || []).forEach(b => {
+      const li = document.createElement("li");
+      li.textContent = b;
+      dBenefits.appendChild(li);
+    });
+
+    // === Mostrar modal ===
+    detModal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+    detModal.dataset.payload = JSON.stringify(data);
   }
 
-  // === Actualizar precio al cambiar tamaño ===
-  sizeSelect?.addEventListener("change", e => {
-    const selected = e.target.selectedOptions[0];
-    dPrice.textContent = money(Number(selected.dataset.price));
-  });
-
-  // === Info del producto ===
-  dDesc.textContent = data.desc || "Sin descripción disponible.";
-  dIngr.textContent = data.ingredients || "—";
-  dHowTo.textContent = data.howto || "—";
-  dWarn.textContent = data.warnings || "—";
-
-  dBenefits.innerHTML = "";
-  (data.benefits || []).forEach(b => {
-    const li = document.createElement("li");
-    li.textContent = b;
-    dBenefits.appendChild(li);
-  });
-
-  // === Mostrar modal ===
-  detModal.classList.add("is-open");
-  document.body.style.overflow = "hidden";
-  detModal.dataset.payload = JSON.stringify(data);
-}
-
-  function closeDetails(){ detModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
-  detModal?.addEventListener("click", e=>{ if(e.target.matches("[data-close-modal]")) closeDetails(); });
-  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeDetails(); });
+  function closeDetails() { detModal?.classList.remove("is-open"); document.body.style.overflow = ""; }
+  detModal?.addEventListener("click", e => { if (e.target.matches("[data-close-modal]")) closeDetails(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape") closeDetails(); });
 
   // Abrir detalles desde el modal chico
-  mMore?.addEventListener("click", (e)=>{
+  mMore?.addEventListener("click", (e) => {
     e.preventDefault();
-    try{
+    try {
       const payload = JSON.parse(mMore.dataset.payload || "{}");
       closeCartModal();
       openDetails(payload);
-    }catch(_){}
+    } catch (_) { }
   });
 
   // ==========================================================
@@ -236,12 +249,12 @@ function openDetails(data) {
 
   let CART = []; // {key, id, name, image, price, size, qty}
 
-  function openDrawer(){
+  function openDrawer() {
     drawer.classList.add("is-open");
     backdrop.style.opacity = 1; backdrop.style.pointerEvents = "auto";
     drawer.setAttribute("aria-hidden", "false");
   }
-  function closeDrawer(){
+  function closeDrawer() {
     drawer.classList.remove("is-open");
     backdrop.style.opacity = 0; backdrop.style.pointerEvents = "none";
     drawer.setAttribute("aria-hidden", "true");
@@ -255,37 +268,37 @@ function openDetails(data) {
     openDrawer();
   });
 
-  function cartKey(id,size){ return `${id || "prod"}::${size || ""}`; }
+  function cartKey(id, size) { return `${id || "prod"}::${size || ""}`; }
 
-  function addToCart(item){
+  function addToCart(item) {
     const key = cartKey(item.id, item.size);
-    const found = CART.find(i=>i.key===key);
-    if(found){ found.qty += item.qty; }
-    else{
-      CART.push({...item, key});
+    const found = CART.find(i => i.key === key);
+    if (found) { found.qty += item.qty; }
+    else {
+      CART.push({ ...item, key });
     }
     renderCart();
     openDrawer();
   }
 
-  function removeFromCart(key){
-    CART = CART.filter(i=>i.key!==key);
+  function removeFromCart(key) {
+    CART = CART.filter(i => i.key !== key);
     renderCart();
-    if(!CART.length) closeDrawer();
+    if (!CART.length) closeDrawer();
   }
 
-  function updateQty(key, delta){
-    const it = CART.find(i=>i.key===key);
-    if(!it) return;
+  function updateQty(key, delta) {
+    const it = CART.find(i => i.key === key);
+    if (!it) return;
     it.qty = Math.max(1, it.qty + delta);
     renderCart();
   }
 
-  function renderCart(){
+  function renderCart() {
     cartList.innerHTML = "";
-    let total = 0, count=0;
+    let total = 0, count = 0;
 
-    CART.forEach(item=>{
+    CART.forEach(item => {
       total += item.price * item.qty;
       count += item.qty;
 
@@ -309,32 +322,32 @@ function openDetails(data) {
       cartList.appendChild(row);
     });
 
-    cartCount.textContent = `(${count} ${count===1?'Producto':'Productos'})`;
+    cartCount.textContent = `(${count} ${count === 1 ? 'Producto' : 'Productos'})`;
     cartTotal.textContent = money(total);
   }
 
   // Delegación de eventos dentro del drawer
-  cartList.addEventListener("click", e=>{
+  cartList.addEventListener("click", e => {
     const btn = e.target.closest("[data-act]");
-    if(!btn) return;
+    if (!btn) return;
     const key = btn.dataset.key;
     const act = btn.dataset.act;
-    if(act==="inc") updateQty(key, +1);
-    if(act==="dec") updateQty(key, -1);
-    if(act==="rm")  removeFromCart(key);
+    if (act === "inc") updateQty(key, +1);
+    if (act === "dec") updateQty(key, -1);
+    if (act === "rm") removeFromCart(key);
   });
-  cartList.addEventListener("change", e=>{
+  cartList.addEventListener("change", e => {
     const inp = e.target;
-    if(inp.matches("input[type='number'][data-key]")){
+    if (inp.matches("input[type='number'][data-key]")) {
       const key = inp.dataset.key;
-      const it = CART.find(i=>i.key===key);
-      if(!it) return;
-      const v = Math.max(1, parseInt(inp.value||"1",10));
+      const it = CART.find(i => i.key === key);
+      if (!it) return;
+      const v = Math.max(1, parseInt(inp.value || "1", 10));
       it.qty = v; renderCart();
     }
   });
 
-  btnCheckout?.addEventListener("click", ()=>{
+  btnCheckout?.addEventListener("click", () => {
     if (CART.length === 0) {
       alert("Tu carrito está vacío.");
       return;
@@ -379,64 +392,64 @@ function openDetails(data) {
   });
 
   // Conectar "Agregar al carrito" de los dos modales
- mAdd?.addEventListener("click", () => {
-  const qty = Math.max(1, parseInt(mQty.value || "1", 10));
-  const data = JSON.parse(mMore?.dataset.payload || "{}");
+  mAdd?.addEventListener("click", () => {
+    const qty = Math.max(1, parseInt(mQty.value || "1", 10));
+    const data = JSON.parse(mMore?.dataset.payload || "{}");
 
-  let price = 0;
-  let size = "";
-  const sizeSelect = $("#cartModalSize");
+    let price = 0;
+    let size = "";
+    const sizeSelect = $("#cartModalSize");
 
-  if (sizeSelect && sizeSelect.value) {
-    size = sizeSelect.value;
-    price = Number(sizeSelect.selectedOptions[0].dataset.price);
-  } else if (data.sizes && data.sizes.length > 0) {
-    price = Number(data.sizes[0].price);
-  } else {
-    price = Number(data.price || 0);
-  }
+    if (sizeSelect && sizeSelect.value) {
+      size = sizeSelect.value;
+      price = Number(sizeSelect.selectedOptions[0].dataset.price);
+    } else if (data.sizes && data.sizes.length > 0) {
+      price = Number(data.sizes[0].price);
+    } else {
+      price = Number(data.price || 0);
+    }
 
-  addToCart({
-    id: data.id,
-    name: data.name,
-    image: data.image,
-    price,
-    size,
-    qty
+    addToCart({
+      id: data.id,
+      name: data.name,
+      image: data.image,
+      price,
+      size,
+      qty
+    });
+
+    closeCartModal();
   });
 
-  closeCartModal();
-});
 
+  dAdd?.addEventListener("click", () => {
+    const qty = Math.max(1, parseInt(dQty.value || "1", 10));
+    const data = JSON.parse(detModal?.dataset.payload || "{}");
 
-dAdd?.addEventListener("click", () => {
-  const qty = Math.max(1, parseInt(dQty.value || "1", 10));
-  const data = JSON.parse(detModal?.dataset.payload || "{}");
+    let price = 0;
+    let size = "";
+    const sizeSelect = $("#detailsSize");
 
-  let price = 0;
-  let size = "";
-  const sizeSelect = $("#detailsSize");
+    if (sizeSelect && sizeSelect.value) {
+      size = sizeSelect.value;
+      price = Number(sizeSelect.selectedOptions[0].dataset.price);
+    } else if (data.sizes && data.sizes.length > 0) {
+      price = Number(data.sizes[0].price);
+    } else {
+      price = Number(data.price || 0);
+    }
 
-  if (sizeSelect && sizeSelect.value) {
-    size = sizeSelect.value;
-    price = Number(sizeSelect.selectedOptions[0].dataset.price);
-  } else if (data.sizes && data.sizes.length > 0) {
-    price = Number(data.sizes[0].price);
-  } else {
-    price = Number(data.price || 0);
-  }
+    addToCart({
+      id: data.id,
+      name: data.name,
+      image: data.image,
+      price,
+      size,
+      qty
+    });
 
-  addToCart({
-    id: data.id,
-    name: data.name,
-    image: data.image,
-    price,
-    size,
-    qty
+    closeDetails();
   });
-
-  closeDetails();
-});
 
   // Función para obtener el token CSRF (necesario para POST)
   function getCSRFToken() {
@@ -469,83 +482,90 @@ dAdd?.addEventListener("click", () => {
         "X-Requested-With": "XMLHttpRequest"
       }
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error("Error en la respuesta del servidor");
-      }
-      return response.json();
-    })
-    .then(data => {
-      if (data.status === 'ok') {
-        // 5. ¡Éxito! Actualizamos el botón
-        //    'data.is_favorited' será true o false (viene del JsonResponse)
-        wishBtn.classList.toggle("is-active", data.is_favorited);
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Error en la respuesta del servidor");
+        }
+        return response.json();
+      })
+      .then(data => {
+        if (data.status === 'ok') {
+          // 5. ¡Éxito! Actualizamos el botón
+          //    'data.is_favorited' será true o false (viene del JsonResponse)
+          wishBtn.classList.toggle("is-active", data.is_favorited);
 
-        // (Opcional) Si estamos en la página de favoritos, podríamos
-        // ocultar la tarjeta si 'is_favorited' es false.
-        // Por ahora, solo cambiar el icono es suficiente.
-      } else {
-        console.error(data.message);
-      }
-    })
-    .catch(error => {
-      console.error("Error en la petición fetch:", error);
-    });
+          // (Opcional) Si estamos en la página de favoritos, podríamos
+          // ocultar la tarjeta si 'is_favorited' es false.
+          // Por ahora, solo cambiar el icono es suficiente.
+        } else {
+          console.error(data.message);
+        }
+      })
+      .catch(error => {
+        console.error("Error en la petición fetch:", error);
+      });
   });
-// ==========================================================
   // ======= AÑADIR AL CARRITO (DESDE FAVORITOS) ========
-  // ==========================================================
-  // Listener para los botones 'Agregar al carrito' en la pág. de favoritos
   document.addEventListener("click", e => {
-
-    // 1. Ver si el clic fue en el botón .fav-card__add
     const addBtn = e.target.closest(".fav-card__add");
     if (!addBtn) return;
 
-    // 2. Encontrar la tarjeta padre
     const card = e.target.closest(".fav-card");
     if (!card) return;
 
-    // 3. Encontrar el input de cantidad DENTRO de esa tarjeta
-    //    (Ya no buscamos 'sizeSelect')
     const qtyInput = card.querySelector(".fav-card__qty");
+    let parsedSizes = [];
 
-    // 4. (Ya no hay validación de tamaño)
+    try {
+      parsedSizes = JSON.parse(addBtn.dataset.sizes || "[]");
+    } catch (err) {
+      console.warn("Error al parsear tamaños:", err);
+      parsedSizes = [];
+    }
 
-    // 5. Recolectar todos los datos del botón y el input
-    const item = {
-      id:     addBtn.dataset.id,
-      name:   addBtn.dataset.name,
-      price:  Number(addBtn.dataset.price || 0),
-      image:  addBtn.dataset.image,
-      // (Ya no pasamos 'size')
-      qty:    Math.max(1, parseInt(qtyInput.value || "1", 10))
-    };
+    // Determinar precio base
+    let price = 0;
+    if (parsedSizes.length > 0) {
+      price = Number(parsedSizes[0].price);
+    } else {
+      price = Number(addBtn.dataset.price || 0);
+    }
 
-    // 6. ¡Llamar a la función addToCart()!
-    addToCart(item);
+    addToCart({
+      id: addBtn.dataset.id,
+      name: addBtn.dataset.name,
+      image: addBtn.dataset.image,
+      price,
+      size: parsedSizes.length ? parsedSizes[0].size : "",
+      qty: Math.max(1, parseInt(qtyInput.value || "1", 10))
+    });
   });
-  // ==========================================================
-  // ==== ABRIR MODAL DETALLES (DESDE FAVORITOS) ========
-  // ==========================================================
-  document.addEventListener("click", e => {
 
+  // ==== ABRIR MODAL DETALLES (DESDE FAVORITOS) ========
+  document.addEventListener("click", e => {
     const detailsLink = e.target.closest(".fav-card__details");
     if (!detailsLink) return;
 
     e.preventDefault();
 
-    // No necesitamos "robar" del botón, leemos del enlace
+    let parsedSizes = [];
+    try {
+      parsedSizes = JSON.parse(detailsLink.dataset.sizes || "[]");
+    } catch (err) {
+      console.warn("Error al parsear tamaños en detalles:", err);
+      parsedSizes = [];
+    }
+
     const data = {
-      id:     detailsLink.dataset.id,
-      name:   detailsLink.dataset.name,
-      price:  Number(detailsLink.dataset.price||0),
-      image:  detailsLink.dataset.image,
-      sizes:  detailsLink.dataset.sizes ? detailsLink.dataset.sizes.split("|") : null,
-      desc:   detailsLink.dataset.desc,
+      id: detailsLink.dataset.id,
+      name: detailsLink.dataset.name,
+      image: detailsLink.dataset.image,
+      sizes: parsedSizes,
+      price: parsedSizes.length ? Number(parsedSizes[0].price) : Number(detailsLink.dataset.price || 0),
+      desc: detailsLink.dataset.desc,
       benefits: detailsLink.dataset.benefits ? detailsLink.dataset.benefits.split("|") : [],
       ingredients: detailsLink.dataset.ingredients,
-      howto:  detailsLink.dataset.howto,
+      howto: detailsLink.dataset.howto,
       warnings: detailsLink.dataset.warnings
     };
 

@@ -33,7 +33,7 @@
   data-ingredients="{{ product.ingredients|default:'' }}"
   data-howto="{{ product.how_to_use|default:'' }}"
   data-warnings="{{ product.warnings|default:'' }}"
-  data-benefits="{% for b in product.benefits.all %}{{ b.name }}{% if not forloop.last %}|{% endif %}{% endfor %}"
+  data-benefits="{{ product.benefits|default:'' }}"
   data-sizes='[
     {% for s in product.sizes.all %}
       {"size": "{{ s.size }}", "price": "{{ s.price }}"}{% if not forloop.last %},{% endif %}

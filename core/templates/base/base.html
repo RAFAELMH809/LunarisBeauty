@@ -26,7 +26,10 @@
   <main>
     {% block content %}{% endblock %}
   </main>
-  <!-- Modal Agregar al carrito -->
+
+  <!-- ======================================================= -->
+  <!-- ================ MODAL AGREGAR AL CARRITO ============== -->
+  <!-- ======================================================= -->
   <div id="cart-modal" class="modal" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal__backdrop" data-close-modal></div>
 
@@ -48,13 +51,12 @@
             <input id="cartModalQty" class="qty__input" type="number" min="1" value="1" inputmode="numeric">
             <button class="qty__btn" data-qty="1">+</button>
           </div>
-          <!-- Toggle de tamaño (no funcional por ahora) -->
+
+          <!-- Selector de tamaño -->
           <div class="modal__size" id="cartModalSizeContainer" style="display:none;">
             <label for="cartModalSize" class="modal__label">Tamaño</label>
             <select id="cartModalSize" class="modal__select"></select>
           </div>
-
-
 
           <button id="cartModalAdd" class="btn btn-primary" style="width:100%; margin-top:12px;">
             Agregar al carrito
@@ -66,8 +68,9 @@
     </div>
   </div>
 
-
-  <!-- Modal Detalles de Producto (grande) -->
+  <!-- ======================================================= -->
+  <!-- ================ MODAL DETALLES PRODUCTO =============== -->
+  <!-- ======================================================= -->
   <div id="details-modal" class="modal modal--lg" aria-hidden="true" role="dialog" aria-modal="true">
     <div class="modal__backdrop" data-close-modal></div>
 
@@ -89,12 +92,12 @@
               <input id="detailsQty" class="qty__input" type="number" min="1" value="1" inputmode="numeric">
               <button class="qty__btn" data-qty="1">+</button>
             </div>
-            <!-- Selector de tamaño (solo si aplica) -->
+
+            <!-- Selector de tamaño -->
             <div class="modal__size" id="detailsSizeContainer" style="display:none;">
               <label for="detailsSize" class="modal__label">Tamaño</label>
               <select id="detailsSize" class="modal__select"></select>
             </div>
-
 
             <button id="detailsAdd" class="btn btn-primary" style="width:100%;margin-top:10px;">
               Agregar al carrito
@@ -102,6 +105,7 @@
           </div>
         </div>
 
+        <!-- ======== SECCIONES DE DETALLE ======== -->
         <div class="details__sections">
           <article class="details__desc">
             <h3>ACERCA DEL PRODUCTO</h3>
@@ -131,7 +135,10 @@
       </div>
     </div>
   </div>
-  <!-- ============ CART DRAWER ============ -->
+
+  <!-- ======================================================= -->
+  <!-- ===================== CART DRAWER ===================== -->
+  <!-- ======================================================= -->
   <div id="cart-backdrop" class="drawer__backdrop" aria-hidden="true"></div>
 
   <aside id="cart-drawer" class="drawer" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Carrito">
@@ -141,7 +148,7 @@
     </header>
 
     <div id="cartItems" class="drawer__body">
-      <!-- items se pintan por JS -->
+      <!-- items generados por JS -->
     </div>
 
     <footer class="drawer__footer">
@@ -158,9 +165,11 @@
     </footer>
   </aside>
 
-
   {% include "partials/_footer.html" %}
 
+  <!-- ======================================================= -->
+  <!-- ===================== SCRIPTS ========================= -->
+  <!-- ======================================================= -->
   <script src="{% static 'core/js/main.js' %}"></script>
   {% block scripts %}{% endblock %}
 </body>

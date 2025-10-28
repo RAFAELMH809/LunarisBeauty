@@ -19,21 +19,31 @@
       {% for product in products %}
       <article class="fav-card modal__content">
 
+        <!-- Botón corazón -->
         <button
-          class="modal__close wish is-active"
+          class="wish is-active"
           data-product-id="{{ product.id }}"
-          aria-label="Quitar favorito"
+          aria-label="Quitar de favoritos"
         >
           ♡
         </button>
 
+        <!-- Imagen -->
         <div class="modal__media">
           <img src="{{ product.image.url }}" alt="{{ product.name }}">
         </div>
 
+        <!-- Info -->
         <div class="modal__body">
           <h3 class="modal__title">{{ product.name }}</h3>
-          <p class="modal__price">${{ product.price }}</p>
+
+          {% with first_size=product.sizes.first %}
+            {% if first_size %}
+              <p class="modal__price">${{ first_size.price }}</p>
+            {% else %}
+              <p class="modal__price">${{ product.price|default:"0.00" }}</p>
+            {% endif %}
+          {% endwith %}
 
           <label class="modal__label">Cantidad *</label>
           <div class="qty">
@@ -42,35 +52,45 @@
             <button class="qty__btn" data-qty="1">+</button>
           </div>
 
+          <!-- Botón agregar -->
           <button
             class="btn btn-primary fav-card__add"
             style="width:100%; margin-top:12px;"
             data-id="{{ product.id }}"
             data-name="{{ product.name }}"
-            data-price="{{ product.price }}"
             data-image="{{ product.image.url }}"
-            data-desc="{{ product.description|default:'' }}"
-            data-benefits="{{ product.benefits|default:'' }}"
-            data-ingredients="{{ product.ingredients|default:'' }}"
-            data-howto="{{ product.how_to_use|default:'' }}"
-            data-warnings="{{ product.warnings|default:'' }}"
+            data-desc="{{ product.description|default:''|escapejs }}"
+            data-ingredients="{{ product.ingredients|default:''|escapejs }}"
+            data-howto="{{ product.how_to_use|default:''|escapejs }}"
+            data-warnings="{{ product.warnings|default:''|escapejs }}"
+            data-benefits="{{ product.benefits|default:''|escapejs }}"
+            data-sizes='[
+              {% for s in product.sizes.all %}
+                {"size": "{{ s.size }}", "price": "{{ s.price }}"}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            ]'
           >
             Agregar al carrito
           </button>
 
+          <!-- Enlace ver más -->
           <a
             href="#"
             class="modal__link fav-card__details"
             style="text-align:center; display:block; margin-top:10px;"
             data-id="{{ product.id }}"
             data-name="{{ product.name }}"
-            data-price="{{ product.price }}"
             data-image="{{ product.image.url }}"
-            data-desc="{{ product.description|default:'' }}"
-            data-benefits="{{ product.benefits|default:'' }}"
-            data-ingredients="{{ product.ingredients|default:'' }}"
-            data-howto="{{ product.how_to_use|default:'' }}"
-            data-warnings="{{ product.warnings|default:'' }}"
+            data-desc="{{ product.description|default:''|escapejs }}"
+            data-ingredients="{{ product.ingredients|default:''|escapejs }}"
+            data-howto="{{ product.how_to_use|default:''|escapejs }}"
+            data-warnings="{{ product.warnings|default:''|escapejs }}"
+            data-benefits="{{ product.benefits|default:''|escapejs }}"
+            data-sizes='[
+              {% for s in product.sizes.all %}
+                {"size": "{{ s.size }}", "price": "{{ s.price }}"}{% if not forloop.last %},{% endif %}
+              {% endfor %}
+            ]'
           >
             Ver más detalles
           </a>
@@ -81,7 +101,7 @@
     </div>
 
   {% else %}
-    <div classs="empty" style="text-align: center; padding: 3rem; background: #f7fbf5; border-radius: 16px; margin-top: 2rem;">
+    <div class="empty" style="text-align: center; padding: 3rem; background: #f7fbf5; border-radius: 16px; margin-top: 2rem;">
       <p style="font-size: 1.2rem; color: var(--fg);">Aún no tienes favoritos.</p>
       <p style="margin-bottom: 1.5rem;">Haz clic en el corazón (♡) de un producto para guardarlo aquí.</p>
       <a href="{% url 'index' %}" class="btn btn-primary">Ver productos</a>
